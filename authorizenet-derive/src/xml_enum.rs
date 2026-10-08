@@ -22,7 +22,7 @@ pub fn expand(input: &DeriveInput) -> Result<TokenStream> {
     let mut other = None;
     for variant in &data.variants {
         let attrs = VariantAttrs::parse(&variant.attrs)?;
-        if attrs.rename.is_some() || attrs.sensitive {
+        if attrs.rename.is_some() || attrs.sensitive || attrs.facets.span.is_some() {
             return Err(syn::Error::new_spanned(
                 variant,
                 "AnetEnum variants take `value = \"...\"` or `other`",
@@ -121,6 +121,15 @@ pub fn expand(input: &DeriveInput) -> Result<TokenStream> {
                 tag: &str,
             ) -> ::core::result::Result<(), #x::XmlError> {
                 #x::write_scalar(self, w, tag)
+            }
+        }
+
+        impl ::authorizenet::validate::Validate for #ident {
+            fn validate_into(
+                &self,
+                _path: &mut ::authorizenet::validate::Path,
+                _out: &mut ::std::vec::Vec<::authorizenet::validate::Violation>,
+            ) {
             }
         }
 

@@ -6,6 +6,7 @@ use syn::{DataStruct, DeriveInput, Fields, Ident, Result, Type};
 
 use crate::attrs::{ContainerAttrs, FieldAttrs};
 use crate::cardinality::Cardinality;
+use crate::facets::Facets;
 use crate::naming::{field_display_name, field_xml_name};
 
 /// One struct field, classified by how it maps to XML.
@@ -13,6 +14,7 @@ struct FieldSpec<'a> {
     ident: &'a Ident,
     display: String,
     sensitive: bool,
+    facets: Facets,
     kind: Kind<'a>,
 }
 
@@ -69,6 +71,7 @@ pub fn expand(input: &DeriveInput, data: &DataStruct) -> Result<TokenStream> {
     let write_attrs = fields.iter().filter_map(|f| write_attribute(f, &x));
     let write_children = fields.iter().filter_map(|f| write_child(f, &x));
     let debug_fields = fields.iter().map(debug_field);
+    let validations = fields.iter().map(validate_field);
 
     let skip_auth = container.request.map(|_| {
         quote! {
@@ -168,6 +171,17 @@ pub fn expand(input: &DeriveInput, data: &DataStruct) -> Result<TokenStream> {
 
         #root_impl
 
+        impl ::authorizenet::validate::Validate for #ident {
+            #[allow(unused_variables)]
+            fn validate_into(
+                &self,
+                path: &mut ::authorizenet::validate::Path,
+                out: &mut ::std::vec::Vec<::authorizenet::validate::Violation>,
+            ) {
+                #(#validations)*
+            }
+        }
+
         impl ::core::fmt::Debug for #ident {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 f.debug_struct(#type_name)
@@ -180,7 +194,8 @@ pub fn expand(input: &DeriveInput, data: &DataStruct) -> Result<TokenStream> {
 
 fn classify(field: &syn::Field) -> Result<FieldSpec<'_>> {
     let ident = field.ident.as_ref().expect("named field");
-    let attrs = FieldAttrs::parse(&field.attrs)?;
+    let mut attrs = FieldAttrs::parse(&field.attrs)?;
+    let facets = std::mem::take(&mut attrs.facets);
     let name = attrs
         .rename
         .clone()
@@ -257,12 +272,42 @@ fn classify(field: &syn::Field) -> Result<FieldSpec<'_>> {
         }
     };
 
+    check_facets(&kind, &facets)?;
     Ok(FieldSpec {
         ident,
         display: field_display_name(ident),
         sensitive: attrs.sensitive,
+        facets,
         kind,
     })
+}
+
+/// Value facets need a value (not `flatten`/`choice`); occurrence facets need a list.
+fn check_facets(kind: &Kind, facets: &Facets) -> Result<()> {
+    let Some(span) = facets.span else {
+        return Ok(());
+    };
+    let is_list = matches!(
+        kind,
+        Kind::Wrapped { .. }
+            | Kind::Element {
+                card: Cardinality::List(_),
+                ..
+            }
+    );
+    if matches!(kind, Kind::Flatten { .. } | Kind::Choice { .. }) {
+        return Err(err(
+            span,
+            "facets do not apply to `flatten` or `choice` fields; put them on the inner type",
+        ));
+    }
+    if facets.has_occurs() && !is_list {
+        return Err(err(
+            span,
+            "`min_occurs`/`max_occurs` only apply to `Vec` fields",
+        ));
+    }
+    Ok(())
 }
 
 fn err(span: Span, msg: &str) -> syn::Error {
@@ -535,5 +580,128 @@ fn debug_field(f: &FieldSpec) -> TokenStream {
         quote!(.field(#display, &self.#ident.as_ref().map(|_| ::authorizenet::xml::Redacted)))
     } else {
         quote!(.field(#display, &::authorizenet::xml::Redacted))
+    }
+}
+
+fn validate_field(f: &FieldSpec) -> TokenStream {
+    let ident = f.ident;
+    let v = quote!(::authorizenet::validate);
+    let checks = f.facets.value_checks();
+    let occurs = f.facets.occurs_check();
+    let one = quote! {
+        #checks
+        #v::Validate::validate_into(value, path, out);
+    };
+    let each = quote! {
+        #occurs
+        for (index, value) in values.iter().enumerate() {
+            path.push_index(index);
+            #one
+            path.pop();
+        }
+    };
+    match &f.kind {
+        Kind::Element { name, card } => match card {
+            Cardinality::Required(_) => quote! {
+                path.push_field(#name);
+                let value = &self.#ident;
+                #one
+                path.pop();
+            },
+            Cardinality::Optional(_) => quote! {
+                if let ::core::option::Option::Some(value) = &self.#ident {
+                    path.push_field(#name);
+                    #one
+                    path.pop();
+                }
+            },
+            Cardinality::List(_) => quote! {
+                path.push_field(#name);
+                let values = &self.#ident;
+                #each
+                path.pop();
+            },
+            Cardinality::OptionalList(_) => unreachable!("rejected in classify"),
+        },
+        Kind::Wrapped {
+            name,
+            optional,
+            keep_empty,
+            ..
+        } => {
+            // An optional wrapper is absent when its `Vec` is empty, and the item
+            // counts only constrain a wrapper that is present.
+            let present_only = !*optional && !*keep_empty && f.facets.has_occurs();
+            let each = if present_only {
+                quote! {
+                    if !values.is_empty() {
+                        #occurs
+                    }
+                    for (index, value) in values.iter().enumerate() {
+                        path.push_index(index);
+                        #one
+                        path.pop();
+                    }
+                }
+            } else {
+                each
+            };
+            let body = quote! {
+                path.push_field(#name);
+                #each
+                path.pop();
+            };
+            if *optional {
+                quote! {
+                    if let ::core::option::Option::Some(values) = &self.#ident {
+                        #body
+                    }
+                }
+            } else {
+                quote! {
+                    let values = &self.#ident;
+                    #body
+                }
+            }
+        }
+        Kind::Attribute { name, optional, .. } => {
+            let label = format!("@{name}");
+            let body = quote! {
+                path.push_field(#label);
+                #one
+                path.pop();
+            };
+            if *optional {
+                quote! {
+                    if let ::core::option::Option::Some(value) = &self.#ident {
+                        #body
+                    }
+                }
+            } else {
+                quote! {
+                    let value = &self.#ident;
+                    #body
+                }
+            }
+        }
+        Kind::Flatten { .. } => quote! {
+            #v::Validate::validate_into(&self.#ident, path, out);
+        },
+        Kind::Choice { card } => match card {
+            Cardinality::Required(_) => quote! {
+                #v::Validate::validate_into(&self.#ident, path, out);
+            },
+            Cardinality::Optional(_) => quote! {
+                if let ::core::option::Option::Some(value) = &self.#ident {
+                    #v::Validate::validate_into(value, path, out);
+                }
+            },
+            Cardinality::List(_) => quote! {
+                for value in &self.#ident {
+                    #v::Validate::validate_into(value, path, out);
+                }
+            },
+            Cardinality::OptionalList(_) => unreachable!("rejected in classify"),
+        },
     }
 }

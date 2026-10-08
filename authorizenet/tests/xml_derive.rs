@@ -448,3 +448,103 @@ fn pretty_output_parses_back() {
         value
     );
 }
+
+mod validation {
+    use authorizenet::Decimal;
+    use authorizenet::validate::Validate;
+    use authorizenet::xml::AnetXml;
+    use pretty_assertions::assert_eq;
+
+    #[derive(Clone, PartialEq, AnetXml)]
+    enum Credential {
+        #[anet(max_length = 4)]
+        Key(String),
+    }
+
+    #[derive(Clone, PartialEq, Default, AnetXml)]
+    struct Item {
+        #[anet(min_length = 1, max_length = 3)]
+        name: Option<String>,
+    }
+
+    #[derive(Clone, PartialEq, Default, AnetXml)]
+    struct Order {
+        #[anet(pattern = "[0-9]+")]
+        id: Option<String>,
+        #[anet(pattern = "[0-9a-zA-Z\\s]+")]
+        note: Option<String>,
+        #[anet(min = "0.01", fraction_digits = 4)]
+        amount: Option<Decimal>,
+        #[anet(min = "1", max = "1000")]
+        limit: Option<i32>,
+        #[anet(wrapper, item = "item", max_occurs = 2)]
+        items: Vec<Item>,
+        #[anet(wrapper, item = "tag", min_occurs = 1)]
+        tags: Vec<String>,
+        #[anet(choice)]
+        credential: Option<Credential>,
+    }
+
+    fn messages(order: &Order) -> Vec<String> {
+        match order.validate() {
+            Ok(()) => Vec::new(),
+            Err(err) => err.violations().iter().map(ToString::to_string).collect(),
+        }
+    }
+
+    #[test]
+    fn valid_value_passes() {
+        let order = Order {
+            id: Some("123".into()),
+            note: Some("two words".into()),
+            amount: Some("5.00".parse().unwrap()),
+            limit: Some(10),
+            ..Order::default()
+        };
+        assert_eq!(messages(&order), Vec::<String>::new());
+    }
+
+    #[test]
+    fn every_violation_is_reported_with_its_path() {
+        let order = Order {
+            id: Some("12a".into()),
+            amount: Some("0.00001".parse().unwrap()),
+            limit: Some(0),
+            items: vec![
+                Item::default(),
+                Item {
+                    name: Some("toolong".into()),
+                },
+                Item::default(),
+            ],
+            credential: Some(Credential::Key("12345".into())),
+            ..Order::default()
+        };
+        assert_eq!(
+            messages(&order),
+            [
+                "id: must match the pattern [0-9]+",
+                "amount: must be at least 0.01, not 0.00001",
+                "amount: must have at most 4 digits after the decimal point, not 5",
+                "limit: must be at least 1, not 0",
+                "items: must have at most 2 items, not 3",
+                "items[1].name: must be at most 3 characters, not 7",
+                "key: must be at most 4 characters, not 5",
+            ]
+        );
+    }
+
+    #[test]
+    fn whitespace_class_in_pattern() {
+        let order = Order {
+            note: Some("tab\there".into()),
+            ..Order::default()
+        };
+        assert_eq!(messages(&order), Vec::<String>::new());
+    }
+
+    #[test]
+    fn absent_optional_wrapper_ignores_its_minimum() {
+        assert_eq!(messages(&Order::default()), Vec::<String>::new());
+    }
+}

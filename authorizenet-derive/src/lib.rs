@@ -24,10 +24,13 @@
 //!   An empty `Vec` omits the container unless `keep_empty` is also given.
 //! - `attribute`: an XML attribute rather than a child element.
 //! - `sensitive`: redacted in `Debug` output.
+//! - XSD facets, checked by the generated `Validate` impl: `length`, `min_length`,
+//!   `max_length`, `pattern = "[class]+"`, `min = "0.01"`, `max = "..."`,
+//!   `total_digits`, `fraction_digits`, and, on lists, `min_occurs` and `max_occurs`.
 //!
 //! On an **enum** whose variants each hold one value: an `xs:choice` group. Variant
-//! attributes: `rename = "xmlName"` (default: the variant name in lowerCamelCase) and
-//! `sensitive`.
+//! attributes: `rename = "xmlName"` (default: the variant name in lowerCamelCase),
+//! `sensitive`, and value facets.
 //!
 //! # `#[derive(AnetEnum)]`
 //!
@@ -36,6 +39,7 @@
 
 mod attrs;
 mod cardinality;
+mod facets;
 mod naming;
 mod xml_choice;
 mod xml_enum;

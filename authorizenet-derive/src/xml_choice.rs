@@ -30,8 +30,15 @@ pub fn expand(input: &DeriveInput, data: &DataEnum) -> Result<TokenStream> {
     let mut reads = Vec::new();
     let mut writes = Vec::new();
     let mut debugs = Vec::new();
+    let mut validates = Vec::new();
     for variant in &data.variants {
         let attrs = VariantAttrs::parse(&variant.attrs)?;
+        if attrs.facets.has_occurs() {
+            return Err(syn::Error::new(
+                attrs.facets.span.expect("set with facets"),
+                "`min_occurs`/`max_occurs` do not apply to a choice variant",
+            ));
+        }
         if attrs.value.is_some() || attrs.other {
             return Err(syn::Error::new_spanned(
                 variant,
@@ -65,6 +72,15 @@ pub fn expand(input: &DeriveInput, data: &DataEnum) -> Result<TokenStream> {
         };
         debugs.push(quote! {
             Self::#var(value) => f.debug_tuple(#var_name).field(#shown).finish(),
+        });
+        let checks = attrs.facets.value_checks();
+        validates.push(quote! {
+            Self::#var(value) => {
+                path.push_field(#name);
+                #checks
+                ::authorizenet::validate::Validate::validate_into(value, path, out);
+                path.pop();
+            }
         });
         names.push(name);
     }
@@ -117,6 +133,18 @@ pub fn expand(input: &DeriveInput, data: &DataEnum) -> Result<TokenStream> {
                 _start: &#x::BytesStart<'a>,
             ) -> ::core::result::Result<Self, #x::XmlError> {
                 #x::read_choice_element(r)
+            }
+        }
+
+        impl ::authorizenet::validate::Validate for #ident {
+            fn validate_into(
+                &self,
+                path: &mut ::authorizenet::validate::Path,
+                out: &mut ::std::vec::Vec<::authorizenet::validate::Violation>,
+            ) {
+                match self {
+                    #(#validates)*
+                }
             }
         }
 

@@ -13,7 +13,9 @@ use super::*;
 #[anet(root = "decryptPaymentDataRequest", request)]
 #[non_exhaustive]
 pub struct DecryptPaymentDataRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub opaque_data: OpaqueData,
     pub call_id: Option<String>,
@@ -43,7 +45,9 @@ pub struct DecryptPaymentDataResponse {
 #[anet(root = "securePaymentContainerRequest", request)]
 #[non_exhaustive]
 pub struct SecurePaymentContainerRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub data: WebCheckOutData,
 }
@@ -85,6 +89,7 @@ pub struct ErrorResponse {
 #[anet(root = "isAliveRequest")]
 #[non_exhaustive]
 pub struct IsAliveRequest {
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -110,7 +115,9 @@ pub struct IsAliveResponse {
 #[anet(root = "authenticateTestRequest", request)]
 #[non_exhaustive]
 pub struct AuthenticateTestRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -137,7 +144,9 @@ pub struct AuthenticateTestResponse {
 #[anet(root = "ARBCreateSubscriptionRequest", request)]
 #[non_exhaustive]
 pub struct ArbCreateSubscriptionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub subscription: ArbSubscription,
 }
@@ -154,6 +163,7 @@ pub struct ArbCreateSubscriptionResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub subscription_id: Option<String>,
     pub profile: Option<CustomerProfileId>,
 }
@@ -167,8 +177,11 @@ pub struct ArbCreateSubscriptionResponse {
 #[anet(root = "ARBUpdateSubscriptionRequest", request)]
 #[non_exhaustive]
 pub struct ArbUpdateSubscriptionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub subscription_id: String,
     pub subscription: ArbSubscription,
 }
@@ -197,8 +210,11 @@ pub struct ArbUpdateSubscriptionResponse {
 #[anet(root = "ARBCancelSubscriptionRequest", request)]
 #[non_exhaustive]
 pub struct ArbCancelSubscriptionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub subscription_id: String,
 }
 
@@ -225,8 +241,11 @@ pub struct ArbCancelSubscriptionResponse {
 #[anet(root = "ARBGetSubscriptionStatusRequest", request)]
 #[non_exhaustive]
 pub struct ArbGetSubscriptionStatusRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub subscription_id: String,
 }
 
@@ -255,7 +274,9 @@ pub struct ArbGetSubscriptionStatusResponse {
 #[anet(root = "createCustomerProfileRequest", request)]
 #[non_exhaustive]
 pub struct CreateCustomerProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub profile: CustomerProfile,
     pub validation_mode: Option<ValidationMode>,
@@ -273,11 +294,12 @@ pub struct CreateCustomerProfileResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
-    #[anet(wrapper, item = "numericString", keep_empty)]
+    #[anet(wrapper, item = "numericString", keep_empty, pattern = "[0-9]+")]
     #[builder(default)]
     pub customer_payment_profile_id_list: Vec<String>,
-    #[anet(wrapper, item = "numericString", keep_empty)]
+    #[anet(wrapper, item = "numericString", keep_empty, pattern = "[0-9]+")]
     #[builder(default)]
     pub customer_shipping_address_id_list: Vec<String>,
     #[anet(wrapper, item = "string", keep_empty)]
@@ -294,8 +316,11 @@ pub struct CreateCustomerProfileResponse {
 #[anet(root = "createCustomerPaymentProfileRequest", request)]
 #[non_exhaustive]
 pub struct CreateCustomerPaymentProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
     pub payment_profile: CustomerPaymentProfile,
     pub validation_mode: Option<ValidationMode>,
@@ -313,8 +338,11 @@ pub struct CreateCustomerPaymentProfileResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
+    #[anet(max_length = 2048)]
     pub validation_direct_response: Option<String>,
 }
 
@@ -327,8 +355,11 @@ pub struct CreateCustomerPaymentProfileResponse {
 #[anet(root = "createCustomerShippingAddressRequest", request)]
 #[non_exhaustive]
 pub struct CreateCustomerShippingAddressRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
     pub address: CustomerAddress,
     pub default_shipping_address: Option<bool>,
@@ -346,7 +377,9 @@ pub struct CreateCustomerShippingAddressResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_address_id: Option<String>,
 }
 
@@ -359,10 +392,14 @@ pub struct CreateCustomerShippingAddressResponse {
 #[anet(root = "createCustomerProfileFromTransactionRequest", request)]
 #[non_exhaustive]
 pub struct CreateCustomerProfileFromTransactionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
     pub customer: Option<CustomerProfileBase>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
     pub default_payment_profile: Option<bool>,
     pub default_shipping_address: Option<bool>,
@@ -379,9 +416,13 @@ pub struct CreateCustomerProfileFromTransactionRequest {
 #[anet(root = "getCustomerProfileRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(max_length = 20)]
     pub merchant_customer_id: Option<String>,
     pub email: Option<String>,
     pub unmask_expiration_date: Option<bool>,
@@ -401,7 +442,7 @@ pub struct GetCustomerProfileResponse {
     #[anet(sensitive)]
     pub session_token: Option<String>,
     pub profile: Option<CustomerProfileMasked>,
-    #[anet(wrapper, item = "subscriptionId")]
+    #[anet(wrapper, item = "subscriptionId", pattern = "[0-9]+")]
     #[builder(default)]
     pub subscription_ids: Vec<String>,
 }
@@ -415,9 +456,13 @@ pub struct GetCustomerProfileResponse {
 #[anet(root = "getCustomerPaymentProfileRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerPaymentProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
     pub unmask_expiration_date: Option<bool>,
     pub include_issuer_info: Option<bool>,
@@ -447,9 +492,13 @@ pub struct GetCustomerPaymentProfileResponse {
 #[anet(root = "getCustomerShippingAddressRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerShippingAddressRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_address_id: Option<String>,
 }
 
@@ -467,7 +516,7 @@ pub struct GetCustomerShippingAddressResponse {
     pub session_token: Option<String>,
     pub default_shipping_address: Option<bool>,
     pub address: Option<CustomerAddressEx>,
-    #[anet(wrapper, item = "subscriptionId")]
+    #[anet(wrapper, item = "subscriptionId", pattern = "[0-9]+")]
     #[builder(default)]
     pub subscription_ids: Vec<String>,
 }
@@ -481,7 +530,9 @@ pub struct GetCustomerShippingAddressResponse {
 #[anet(root = "updateCustomerProfileRequest", request)]
 #[non_exhaustive]
 pub struct UpdateCustomerProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub profile: CustomerProfileInfoEx,
 }
@@ -509,8 +560,11 @@ pub struct UpdateCustomerProfileResponse {
 #[anet(root = "updateCustomerPaymentProfileRequest", request)]
 #[non_exhaustive]
 pub struct UpdateCustomerPaymentProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
     pub payment_profile: CustomerPaymentProfileEx,
     pub validation_mode: Option<ValidationMode>,
@@ -528,6 +582,7 @@ pub struct UpdateCustomerPaymentProfileResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(max_length = 2048)]
     pub validation_direct_response: Option<String>,
 }
 
@@ -540,8 +595,11 @@ pub struct UpdateCustomerPaymentProfileResponse {
 #[anet(root = "updateCustomerShippingAddressRequest", request)]
 #[non_exhaustive]
 pub struct UpdateCustomerShippingAddressRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
     pub address: CustomerAddressEx,
     pub default_shipping_address: Option<bool>,
@@ -571,8 +629,11 @@ pub struct UpdateCustomerShippingAddressResponse {
 #[anet(root = "deleteCustomerProfileRequest", request)]
 #[non_exhaustive]
 pub struct DeleteCustomerProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
 }
 
@@ -599,9 +660,13 @@ pub struct DeleteCustomerProfileResponse {
 #[anet(root = "deleteCustomerPaymentProfileRequest", request)]
 #[non_exhaustive]
 pub struct DeleteCustomerPaymentProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: String,
 }
 
@@ -628,9 +693,13 @@ pub struct DeleteCustomerPaymentProfileResponse {
 #[anet(root = "deleteCustomerShippingAddressRequest", request)]
 #[non_exhaustive]
 pub struct DeleteCustomerShippingAddressRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_address_id: String,
 }
 
@@ -657,9 +726,12 @@ pub struct DeleteCustomerShippingAddressResponse {
 #[anet(root = "createCustomerProfileTransactionRequest", request)]
 #[non_exhaustive]
 pub struct CreateCustomerProfileTransactionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub transaction: ProfileTransaction,
+    #[anet(max_length = 1024)]
     pub extra_options: Option<String>,
 }
 
@@ -676,6 +748,7 @@ pub struct CreateCustomerProfileTransactionResponse {
     #[anet(sensitive)]
     pub session_token: Option<String>,
     pub transaction_response: Option<TransactionResponse>,
+    #[anet(max_length = 2048)]
     pub direct_response: Option<String>,
 }
 
@@ -688,12 +761,17 @@ pub struct CreateCustomerProfileTransactionResponse {
 #[anet(root = "validateCustomerPaymentProfileRequest", request)]
 #[non_exhaustive]
 pub struct ValidateCustomerPaymentProfileRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_shipping_address_id: Option<String>,
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 3, max_length = 4, pattern = "[0-9]+")]
     pub card_code: Option<String>,
     pub validation_mode: ValidationMode,
 }
@@ -710,6 +788,7 @@ pub struct ValidateCustomerPaymentProfileResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+    #[anet(max_length = 2048)]
     pub direct_response: Option<String>,
 }
 
@@ -722,7 +801,9 @@ pub struct ValidateCustomerPaymentProfileResponse {
 #[anet(root = "getCustomerProfileIdsRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerProfileIdsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -738,7 +819,7 @@ pub struct GetCustomerProfileIdsResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
-    #[anet(wrapper, item = "numericString", keep_empty)]
+    #[anet(wrapper, item = "numericString", keep_empty, pattern = "[0-9]+")]
     #[builder(default)]
     pub ids: Vec<String>,
 }
@@ -751,7 +832,9 @@ pub struct GetCustomerProfileIdsResponse {
 #[anet(root = "updateSplitTenderGroupRequest", request)]
 #[non_exhaustive]
 pub struct UpdateSplitTenderGroupRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub split_tender_id: String,
     pub split_tender_status: SplitTenderStatus,
@@ -779,7 +862,9 @@ pub struct UpdateSplitTenderGroupResponse {
 #[anet(root = "getTransactionDetailsRequest", request)]
 #[non_exhaustive]
 pub struct GetTransactionDetailsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     #[anet(choice)]
     pub reference: TransactionReference,
@@ -798,7 +883,9 @@ pub struct GetTransactionDetailsResponse {
     #[anet(sensitive)]
     pub session_token: Option<String>,
     pub transaction: TransactionDetails,
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub transref_id: Option<String>,
 }
 
@@ -811,8 +898,11 @@ pub struct GetTransactionDetailsResponse {
 #[anet(root = "getTransactionSummaryRequest", request)]
 #[non_exhaustive]
 pub struct GetTransactionSummaryRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(max_length = 40, pattern = "[0-9]+")]
     pub trans_id: String,
 }
 
@@ -840,7 +930,9 @@ pub struct GetTransactionSummaryResponse {
 #[anet(root = "createTransactionRequest", request)]
 #[non_exhaustive]
 pub struct CreateTransactionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     #[anet(choice)]
     pub transaction: CreateTransactionPayload,
@@ -871,7 +963,9 @@ pub struct CreateTransactionResponse {
 #[anet(root = "updateHeldTransactionRequest", request)]
 #[non_exhaustive]
 pub struct UpdateHeldTransactionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub held_transaction_request: HeldTransactionRequest,
 }
@@ -900,8 +994,11 @@ pub struct UpdateHeldTransactionResponse {
 #[anet(root = "getBatchStatisticsRequest", request)]
 #[non_exhaustive]
 pub struct GetBatchStatisticsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub batch_id: String,
 }
 
@@ -928,7 +1025,9 @@ pub struct GetBatchStatisticsResponse {
 #[anet(root = "getSettledBatchListRequest", request)]
 #[non_exhaustive]
 pub struct GetSettledBatchListRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub include_statistics: Option<bool>,
     pub first_settlement_date: Option<XmlDateTime>,
@@ -961,8 +1060,11 @@ pub struct GetSettledBatchListResponse {
 #[anet(root = "getTransactionListRequest", request)]
 #[non_exhaustive]
 pub struct GetTransactionListRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub batch_id: Option<String>,
     pub sorting: Option<TransactionListSorting>,
     pub paging: Option<Paging>,
@@ -996,8 +1098,11 @@ pub struct GetTransactionListResponse {
 #[anet(root = "getHostedProfilePageRequest", request)]
 #[non_exhaustive]
 pub struct GetHostedProfilePageRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
     /// Allowed values for settingName are: hostedProfileReturnUrl, hostedProfileReturnUrlText, hostedProfilePageBorderVisible, hostedProfileIFrameCommunicatorUrl, hostedProfileHeadingBgColor, hostedProfileBillingAddressRequired, hostedProfileCardCodeRequired, hostedProfileBillingAddressOptions, hostedProfileManageOptions, hostedProfilePaymentOptions, hostedProfileSaveButtonText.
     pub hosted_profile_settings: Option<ArrayOfSetting>,
@@ -1026,7 +1131,9 @@ pub struct GetHostedProfilePageResponse {
 #[anet(root = "getUnsettledTransactionListRequest", request)]
 #[non_exhaustive]
 pub struct GetUnsettledTransactionListRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub status: Option<TransactionGroupStatus>,
     pub sorting: Option<TransactionListSorting>,
@@ -1042,7 +1149,9 @@ pub struct GetUnsettledTransactionListRequest {
 #[anet(root = "getHostedPaymentPageRequest", request)]
 #[non_exhaustive]
 pub struct GetHostedPaymentPageRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub transaction_request: TransactionRequest,
     /// Allowed values for settingName are: hostedPaymentIFrameCommunicatorUrl, hostedPaymentButtonOptions, hostedPaymentReturnOptions, hostedPaymentOrderOptions, hostedPaymentPaymentOptions, hostedPaymentBillingAddressOptions, hostedPaymentShippingAddressOptions, hostedPaymentSecurityOptions, hostedPaymentCustomerOptions, hostedPaymentStyleOptions
@@ -1090,7 +1199,9 @@ pub struct GetUnsettledTransactionListResponse {
 #[anet(root = "mobileDeviceRegistrationRequest", request)]
 #[non_exhaustive]
 pub struct MobileDeviceRegistrationRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub mobile_device: MobileDevice,
 }
@@ -1117,7 +1228,9 @@ pub struct MobileDeviceRegistrationResponse {
 #[anet(root = "mobileDeviceLoginPinRequest", request)]
 #[non_exhaustive]
 pub struct MobileDeviceLoginPinRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub pin_delivery_request_enc: String,
 }
@@ -1130,7 +1243,9 @@ pub struct MobileDeviceLoginPinRequest {
 #[anet(root = "mobileDeviceLoginVerifyPinRequest", request)]
 #[non_exhaustive]
 pub struct MobileDeviceLoginVerifyPinRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub pin_verify_request_enc: String,
 }
@@ -1143,7 +1258,9 @@ pub struct MobileDeviceLoginVerifyPinRequest {
 #[anet(root = "mobileDeviceLoginVerifyChallengeRequest", request)]
 #[non_exhaustive]
 pub struct MobileDeviceLoginVerifyChallengeRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub pin_verify_request_enc: String,
 }
@@ -1204,8 +1321,11 @@ pub struct MobileDeviceLoginVerifyChallengeResponse {
 #[anet(root = "mobileDeviceMfaLoginRequest", request)]
 #[non_exhaustive]
 pub struct MobileDeviceMfaLoginRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(max_length = 2048)]
     pub signature_key: Option<String>,
 }
 
@@ -1243,7 +1363,9 @@ pub struct MobileDeviceMfaLoginResponse {
 #[anet(root = "logoutRequest", request)]
 #[non_exhaustive]
 pub struct LogoutRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -1269,8 +1391,11 @@ pub struct LogoutResponse {
 #[anet(root = "sendCustomerTransactionReceiptRequest", request)]
 #[non_exhaustive]
 pub struct SendCustomerTransactionReceiptRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
     pub customer_email: String,
     pub email_settings: Option<EmailSettings>,
@@ -1296,7 +1421,9 @@ pub struct SendCustomerTransactionReceiptResponse {
 #[anet(root = "ARBGetSubscriptionListRequest", request)]
 #[non_exhaustive]
 pub struct ArbGetSubscriptionListRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub search_type: ArbGetSubscriptionListSearchType,
     pub sorting: Option<ArbGetSubscriptionListSorting>,
@@ -1327,9 +1454,12 @@ pub struct ArbGetSubscriptionListResponse {
 #[anet(root = "getCustomerPaymentProfileListRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerPaymentProfileListRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub search_type: CustomerPaymentProfileSearchType,
+    #[anet(min_length = 4, max_length = 7)]
     pub month: String,
     pub sorting: Option<CustomerPaymentProfileSorting>,
     pub paging: Option<Paging>,
@@ -1360,8 +1490,11 @@ pub struct GetCustomerPaymentProfileListResponse {
 #[anet(root = "ARBGetSubscriptionRequest", request)]
 #[non_exhaustive]
 pub struct ArbGetSubscriptionRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub subscription_id: String,
     pub include_transactions: Option<bool>,
 }
@@ -1391,9 +1524,13 @@ pub struct ArbGetSubscriptionResponse {
 #[anet(root = "getTransactionListForCustomerRequest", request)]
 #[non_exhaustive]
 pub struct GetTransactionListForCustomerRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
     pub sorting: Option<TransactionListSorting>,
     pub paging: Option<Paging>,
@@ -1408,8 +1545,11 @@ pub struct GetTransactionListForCustomerRequest {
 #[anet(root = "getAUJobSummaryRequest", request)]
 #[non_exhaustive]
 pub struct GetAuJobSummaryRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(min_length = 4, max_length = 7)]
     pub month: String,
 }
 
@@ -1439,8 +1579,11 @@ pub struct GetAuJobSummaryResponse {
 #[anet(root = "getAUJobDetailsRequest", request)]
 #[non_exhaustive]
 pub struct GetAuJobDetailsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
+    #[anet(min_length = 4, max_length = 7)]
     pub month: String,
     pub modified_type_filter: Option<AuJobType>,
     pub paging: Option<Paging>,
@@ -1471,7 +1614,9 @@ pub struct GetAuJobDetailsResponse {
 #[anet(root = "getMerchantDetailsRequest", request)]
 #[non_exhaustive]
 pub struct GetMerchantDetailsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -1492,21 +1637,23 @@ pub struct GetMerchantDetailsResponse {
     #[builder(default)]
     pub processors: Vec<Processor>,
     pub merchant_name: String,
+    #[anet(pattern = "[0-9]+")]
     pub gateway_id: String,
-    #[anet(wrapper, item = "marketType", keep_empty)]
+    #[anet(wrapper, item = "marketType", keep_empty, max_length = 50)]
     #[builder(default)]
     pub market_types: Vec<String>,
-    #[anet(wrapper, item = "productCode", keep_empty)]
+    #[anet(wrapper, item = "productCode", keep_empty, max_length = 3)]
     #[builder(default)]
     pub product_codes: Vec<String>,
     #[anet(wrapper, item = "paymentMethod", keep_empty)]
     #[builder(default)]
     pub payment_methods: Vec<PaymentMethodsType>,
-    #[anet(wrapper, item = "currency", keep_empty)]
+    #[anet(wrapper, item = "currency", keep_empty, min_length = 3, max_length = 3)]
     #[builder(default)]
     pub currencies: Vec<String>,
     pub public_client_key: Option<String>,
     pub business_information: Option<CustomerAddress>,
+    #[anet(max_length = 100)]
     pub merchant_time_zone: Option<String>,
     #[anet(wrapper, item = "contactDetail")]
     #[builder(default)]
@@ -1522,7 +1669,9 @@ pub struct GetMerchantDetailsResponse {
 #[anet(root = "updateMerchantDetailsRequest", request)]
 #[non_exhaustive]
 pub struct UpdateMerchantDetailsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub is_test_mode: bool,
 }
@@ -1550,10 +1699,14 @@ pub struct UpdateMerchantDetailsResponse {
 #[anet(root = "getCustomerPaymentProfileNonceRequest", request)]
 #[non_exhaustive]
 pub struct GetCustomerPaymentProfileNonceRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub connected_access_token: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: String,
 }
 
@@ -1580,7 +1733,9 @@ pub struct GetCustomerPaymentProfileNonceResponse {
 #[anet(root = "getADDetailsRequest", request)]
 #[non_exhaustive]
 pub struct GetAdDetailsRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
 }
 
@@ -1610,7 +1765,9 @@ pub struct GetAdDetailsResponse {
 #[anet(root = "saveDeviceSNRequest", request)]
 #[non_exhaustive]
 pub struct SaveDeviceSnRequest {
+    #[anet(max_length = 30)]
     pub client_id: Option<String>,
+    #[anet(max_length = 50)]
     pub ref_id: Option<String>,
     pub acceptance_devices_account: AcceptanceDevicesAccount,
 }
@@ -1627,6 +1784,1609 @@ pub struct SaveDeviceSnResponse {
     pub messages: Messages,
     #[anet(sensitive)]
     pub session_token: Option<String>,
+}
+
+/// Any API response.
+///
+/// An [`ApiError`](crate::ApiError) keeps the response that reported the error as
+/// this type.
+#[derive(Debug, Clone, PartialEq)]
+#[non_exhaustive]
+pub enum AnyResponse {
+    DecryptPaymentDataResponse(DecryptPaymentDataResponse),
+    SecurePaymentContainerResponse(SecurePaymentContainerResponse),
+    ErrorResponse(ErrorResponse),
+    IsAliveResponse(IsAliveResponse),
+    AuthenticateTestResponse(AuthenticateTestResponse),
+    ArbCreateSubscriptionResponse(ArbCreateSubscriptionResponse),
+    ArbUpdateSubscriptionResponse(ArbUpdateSubscriptionResponse),
+    ArbCancelSubscriptionResponse(ArbCancelSubscriptionResponse),
+    ArbGetSubscriptionStatusResponse(ArbGetSubscriptionStatusResponse),
+    CreateCustomerProfileResponse(CreateCustomerProfileResponse),
+    CreateCustomerPaymentProfileResponse(CreateCustomerPaymentProfileResponse),
+    CreateCustomerShippingAddressResponse(CreateCustomerShippingAddressResponse),
+    GetCustomerProfileResponse(GetCustomerProfileResponse),
+    GetCustomerPaymentProfileResponse(GetCustomerPaymentProfileResponse),
+    GetCustomerShippingAddressResponse(GetCustomerShippingAddressResponse),
+    UpdateCustomerProfileResponse(UpdateCustomerProfileResponse),
+    UpdateCustomerPaymentProfileResponse(UpdateCustomerPaymentProfileResponse),
+    UpdateCustomerShippingAddressResponse(UpdateCustomerShippingAddressResponse),
+    DeleteCustomerProfileResponse(DeleteCustomerProfileResponse),
+    DeleteCustomerPaymentProfileResponse(DeleteCustomerPaymentProfileResponse),
+    DeleteCustomerShippingAddressResponse(DeleteCustomerShippingAddressResponse),
+    CreateCustomerProfileTransactionResponse(CreateCustomerProfileTransactionResponse),
+    ValidateCustomerPaymentProfileResponse(ValidateCustomerPaymentProfileResponse),
+    GetCustomerProfileIdsResponse(GetCustomerProfileIdsResponse),
+    UpdateSplitTenderGroupResponse(UpdateSplitTenderGroupResponse),
+    GetTransactionDetailsResponse(GetTransactionDetailsResponse),
+    GetTransactionSummaryResponse(GetTransactionSummaryResponse),
+    CreateTransactionResponse(CreateTransactionResponse),
+    UpdateHeldTransactionResponse(UpdateHeldTransactionResponse),
+    GetBatchStatisticsResponse(GetBatchStatisticsResponse),
+    GetSettledBatchListResponse(GetSettledBatchListResponse),
+    GetTransactionListResponse(GetTransactionListResponse),
+    GetHostedProfilePageResponse(GetHostedProfilePageResponse),
+    GetHostedPaymentPageResponse(GetHostedPaymentPageResponse),
+    GetUnsettledTransactionListResponse(GetUnsettledTransactionListResponse),
+    MobileDeviceRegistrationResponse(MobileDeviceRegistrationResponse),
+    MobileDeviceLoginPinResponse(MobileDeviceLoginPinResponse),
+    MobileDeviceLoginVerifyPinResponse(MobileDeviceLoginVerifyPinResponse),
+    MobileDeviceLoginVerifyChallengeResponse(MobileDeviceLoginVerifyChallengeResponse),
+    MobileDeviceMfaLoginResponse(MobileDeviceMfaLoginResponse),
+    LogoutResponse(LogoutResponse),
+    SendCustomerTransactionReceiptResponse(SendCustomerTransactionReceiptResponse),
+    ArbGetSubscriptionListResponse(ArbGetSubscriptionListResponse),
+    GetCustomerPaymentProfileListResponse(GetCustomerPaymentProfileListResponse),
+    ArbGetSubscriptionResponse(ArbGetSubscriptionResponse),
+    GetAuJobSummaryResponse(GetAuJobSummaryResponse),
+    GetAuJobDetailsResponse(GetAuJobDetailsResponse),
+    GetMerchantDetailsResponse(GetMerchantDetailsResponse),
+    UpdateMerchantDetailsResponse(UpdateMerchantDetailsResponse),
+    GetCustomerPaymentProfileNonceResponse(GetCustomerPaymentProfileNonceResponse),
+    GetAdDetailsResponse(GetAdDetailsResponse),
+    SaveDeviceSnResponse(SaveDeviceSnResponse),
+}
+
+impl AnyResponse {
+    /// The response's overall result.
+    pub fn messages(&self) -> &Messages {
+        match self {
+            Self::DecryptPaymentDataResponse(response) => &response.messages,
+            Self::SecurePaymentContainerResponse(response) => &response.messages,
+            Self::ErrorResponse(response) => &response.messages,
+            Self::IsAliveResponse(response) => &response.messages,
+            Self::AuthenticateTestResponse(response) => &response.messages,
+            Self::ArbCreateSubscriptionResponse(response) => &response.messages,
+            Self::ArbUpdateSubscriptionResponse(response) => &response.messages,
+            Self::ArbCancelSubscriptionResponse(response) => &response.messages,
+            Self::ArbGetSubscriptionStatusResponse(response) => &response.messages,
+            Self::CreateCustomerProfileResponse(response) => &response.messages,
+            Self::CreateCustomerPaymentProfileResponse(response) => &response.messages,
+            Self::CreateCustomerShippingAddressResponse(response) => &response.messages,
+            Self::GetCustomerProfileResponse(response) => &response.messages,
+            Self::GetCustomerPaymentProfileResponse(response) => &response.messages,
+            Self::GetCustomerShippingAddressResponse(response) => &response.messages,
+            Self::UpdateCustomerProfileResponse(response) => &response.messages,
+            Self::UpdateCustomerPaymentProfileResponse(response) => &response.messages,
+            Self::UpdateCustomerShippingAddressResponse(response) => &response.messages,
+            Self::DeleteCustomerProfileResponse(response) => &response.messages,
+            Self::DeleteCustomerPaymentProfileResponse(response) => &response.messages,
+            Self::DeleteCustomerShippingAddressResponse(response) => &response.messages,
+            Self::CreateCustomerProfileTransactionResponse(response) => {
+                &response.messages
+            }
+            Self::ValidateCustomerPaymentProfileResponse(response) => &response.messages,
+            Self::GetCustomerProfileIdsResponse(response) => &response.messages,
+            Self::UpdateSplitTenderGroupResponse(response) => &response.messages,
+            Self::GetTransactionDetailsResponse(response) => &response.messages,
+            Self::GetTransactionSummaryResponse(response) => &response.messages,
+            Self::CreateTransactionResponse(response) => &response.messages,
+            Self::UpdateHeldTransactionResponse(response) => &response.messages,
+            Self::GetBatchStatisticsResponse(response) => &response.messages,
+            Self::GetSettledBatchListResponse(response) => &response.messages,
+            Self::GetTransactionListResponse(response) => &response.messages,
+            Self::GetHostedProfilePageResponse(response) => &response.messages,
+            Self::GetHostedPaymentPageResponse(response) => &response.messages,
+            Self::GetUnsettledTransactionListResponse(response) => &response.messages,
+            Self::MobileDeviceRegistrationResponse(response) => &response.messages,
+            Self::MobileDeviceLoginPinResponse(response) => &response.messages,
+            Self::MobileDeviceLoginVerifyPinResponse(response) => &response.messages,
+            Self::MobileDeviceLoginVerifyChallengeResponse(response) => {
+                &response.messages
+            }
+            Self::MobileDeviceMfaLoginResponse(response) => &response.messages,
+            Self::LogoutResponse(response) => &response.messages,
+            Self::SendCustomerTransactionReceiptResponse(response) => &response.messages,
+            Self::ArbGetSubscriptionListResponse(response) => &response.messages,
+            Self::GetCustomerPaymentProfileListResponse(response) => &response.messages,
+            Self::ArbGetSubscriptionResponse(response) => &response.messages,
+            Self::GetAuJobSummaryResponse(response) => &response.messages,
+            Self::GetAuJobDetailsResponse(response) => &response.messages,
+            Self::GetMerchantDetailsResponse(response) => &response.messages,
+            Self::UpdateMerchantDetailsResponse(response) => &response.messages,
+            Self::GetCustomerPaymentProfileNonceResponse(response) => &response.messages,
+            Self::GetAdDetailsResponse(response) => &response.messages,
+            Self::SaveDeviceSnResponse(response) => &response.messages,
+        }
+    }
+}
+
+impl crate::api::ApiResponse for DecryptPaymentDataResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::DecryptPaymentDataResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<DecryptPaymentDataResponse> for AnyResponse {
+    fn from(response: DecryptPaymentDataResponse) -> Self {
+        Self::DecryptPaymentDataResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for DecryptPaymentDataResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::DecryptPaymentDataResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for SecurePaymentContainerResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::SecurePaymentContainerResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<SecurePaymentContainerResponse> for AnyResponse {
+    fn from(response: SecurePaymentContainerResponse) -> Self {
+        Self::SecurePaymentContainerResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for SecurePaymentContainerResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::SecurePaymentContainerResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ErrorResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ErrorResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ErrorResponse> for AnyResponse {
+    fn from(response: ErrorResponse) -> Self {
+        Self::ErrorResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ErrorResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ErrorResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for IsAliveResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::IsAliveResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<IsAliveResponse> for AnyResponse {
+    fn from(response: IsAliveResponse) -> Self {
+        Self::IsAliveResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for IsAliveResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::IsAliveResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for AuthenticateTestResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::AuthenticateTestResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<AuthenticateTestResponse> for AnyResponse {
+    fn from(response: AuthenticateTestResponse) -> Self {
+        Self::AuthenticateTestResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for AuthenticateTestResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::AuthenticateTestResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbCreateSubscriptionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbCreateSubscriptionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbCreateSubscriptionResponse> for AnyResponse {
+    fn from(response: ArbCreateSubscriptionResponse) -> Self {
+        Self::ArbCreateSubscriptionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbCreateSubscriptionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbCreateSubscriptionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbUpdateSubscriptionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbUpdateSubscriptionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbUpdateSubscriptionResponse> for AnyResponse {
+    fn from(response: ArbUpdateSubscriptionResponse) -> Self {
+        Self::ArbUpdateSubscriptionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbUpdateSubscriptionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbUpdateSubscriptionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbCancelSubscriptionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbCancelSubscriptionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbCancelSubscriptionResponse> for AnyResponse {
+    fn from(response: ArbCancelSubscriptionResponse) -> Self {
+        Self::ArbCancelSubscriptionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbCancelSubscriptionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbCancelSubscriptionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbGetSubscriptionStatusResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbGetSubscriptionStatusResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbGetSubscriptionStatusResponse> for AnyResponse {
+    fn from(response: ArbGetSubscriptionStatusResponse) -> Self {
+        Self::ArbGetSubscriptionStatusResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbGetSubscriptionStatusResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbGetSubscriptionStatusResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for CreateCustomerProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::CreateCustomerProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<CreateCustomerProfileResponse> for AnyResponse {
+    fn from(response: CreateCustomerProfileResponse) -> Self {
+        Self::CreateCustomerProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for CreateCustomerProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::CreateCustomerProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for CreateCustomerPaymentProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::CreateCustomerPaymentProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<CreateCustomerPaymentProfileResponse> for AnyResponse {
+    fn from(response: CreateCustomerPaymentProfileResponse) -> Self {
+        Self::CreateCustomerPaymentProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for CreateCustomerPaymentProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::CreateCustomerPaymentProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for CreateCustomerShippingAddressResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::CreateCustomerShippingAddressResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<CreateCustomerShippingAddressResponse> for AnyResponse {
+    fn from(response: CreateCustomerShippingAddressResponse) -> Self {
+        Self::CreateCustomerShippingAddressResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for CreateCustomerShippingAddressResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::CreateCustomerShippingAddressResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerProfileResponse> for AnyResponse {
+    fn from(response: GetCustomerProfileResponse) -> Self {
+        Self::GetCustomerProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerPaymentProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerPaymentProfileResponse> for AnyResponse {
+    fn from(response: GetCustomerPaymentProfileResponse) -> Self {
+        Self::GetCustomerPaymentProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerPaymentProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerShippingAddressResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerShippingAddressResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerShippingAddressResponse> for AnyResponse {
+    fn from(response: GetCustomerShippingAddressResponse) -> Self {
+        Self::GetCustomerShippingAddressResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerShippingAddressResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerShippingAddressResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateCustomerProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateCustomerProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateCustomerProfileResponse> for AnyResponse {
+    fn from(response: UpdateCustomerProfileResponse) -> Self {
+        Self::UpdateCustomerProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateCustomerProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateCustomerProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateCustomerPaymentProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateCustomerPaymentProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateCustomerPaymentProfileResponse> for AnyResponse {
+    fn from(response: UpdateCustomerPaymentProfileResponse) -> Self {
+        Self::UpdateCustomerPaymentProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateCustomerPaymentProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateCustomerPaymentProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateCustomerShippingAddressResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateCustomerShippingAddressResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateCustomerShippingAddressResponse> for AnyResponse {
+    fn from(response: UpdateCustomerShippingAddressResponse) -> Self {
+        Self::UpdateCustomerShippingAddressResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateCustomerShippingAddressResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateCustomerShippingAddressResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for DeleteCustomerProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::DeleteCustomerProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<DeleteCustomerProfileResponse> for AnyResponse {
+    fn from(response: DeleteCustomerProfileResponse) -> Self {
+        Self::DeleteCustomerProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for DeleteCustomerProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::DeleteCustomerProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for DeleteCustomerPaymentProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::DeleteCustomerPaymentProfileResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<DeleteCustomerPaymentProfileResponse> for AnyResponse {
+    fn from(response: DeleteCustomerPaymentProfileResponse) -> Self {
+        Self::DeleteCustomerPaymentProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for DeleteCustomerPaymentProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::DeleteCustomerPaymentProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for DeleteCustomerShippingAddressResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::DeleteCustomerShippingAddressResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<DeleteCustomerShippingAddressResponse> for AnyResponse {
+    fn from(response: DeleteCustomerShippingAddressResponse) -> Self {
+        Self::DeleteCustomerShippingAddressResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for DeleteCustomerShippingAddressResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::DeleteCustomerShippingAddressResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for CreateCustomerProfileTransactionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::CreateCustomerProfileTransactionResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<CreateCustomerProfileTransactionResponse> for AnyResponse {
+    fn from(response: CreateCustomerProfileTransactionResponse) -> Self {
+        Self::CreateCustomerProfileTransactionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for CreateCustomerProfileTransactionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::CreateCustomerProfileTransactionResponse(response) => {
+                Ok(response)
+            }
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ValidateCustomerPaymentProfileResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ValidateCustomerPaymentProfileResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<ValidateCustomerPaymentProfileResponse> for AnyResponse {
+    fn from(response: ValidateCustomerPaymentProfileResponse) -> Self {
+        Self::ValidateCustomerPaymentProfileResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ValidateCustomerPaymentProfileResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ValidateCustomerPaymentProfileResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerProfileIdsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerProfileIdsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerProfileIdsResponse> for AnyResponse {
+    fn from(response: GetCustomerProfileIdsResponse) -> Self {
+        Self::GetCustomerProfileIdsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerProfileIdsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerProfileIdsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateSplitTenderGroupResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateSplitTenderGroupResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateSplitTenderGroupResponse> for AnyResponse {
+    fn from(response: UpdateSplitTenderGroupResponse) -> Self {
+        Self::UpdateSplitTenderGroupResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateSplitTenderGroupResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateSplitTenderGroupResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetTransactionDetailsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetTransactionDetailsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetTransactionDetailsResponse> for AnyResponse {
+    fn from(response: GetTransactionDetailsResponse) -> Self {
+        Self::GetTransactionDetailsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetTransactionDetailsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetTransactionDetailsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetTransactionSummaryResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetTransactionSummaryResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetTransactionSummaryResponse> for AnyResponse {
+    fn from(response: GetTransactionSummaryResponse) -> Self {
+        Self::GetTransactionSummaryResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetTransactionSummaryResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetTransactionSummaryResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for CreateTransactionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::CreateTransactionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<CreateTransactionResponse> for AnyResponse {
+    fn from(response: CreateTransactionResponse) -> Self {
+        Self::CreateTransactionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for CreateTransactionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::CreateTransactionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateHeldTransactionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateHeldTransactionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateHeldTransactionResponse> for AnyResponse {
+    fn from(response: UpdateHeldTransactionResponse) -> Self {
+        Self::UpdateHeldTransactionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateHeldTransactionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateHeldTransactionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetBatchStatisticsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetBatchStatisticsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetBatchStatisticsResponse> for AnyResponse {
+    fn from(response: GetBatchStatisticsResponse) -> Self {
+        Self::GetBatchStatisticsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetBatchStatisticsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetBatchStatisticsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetSettledBatchListResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetSettledBatchListResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetSettledBatchListResponse> for AnyResponse {
+    fn from(response: GetSettledBatchListResponse) -> Self {
+        Self::GetSettledBatchListResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetSettledBatchListResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetSettledBatchListResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetTransactionListResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetTransactionListResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetTransactionListResponse> for AnyResponse {
+    fn from(response: GetTransactionListResponse) -> Self {
+        Self::GetTransactionListResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetTransactionListResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetTransactionListResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetHostedProfilePageResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetHostedProfilePageResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetHostedProfilePageResponse> for AnyResponse {
+    fn from(response: GetHostedProfilePageResponse) -> Self {
+        Self::GetHostedProfilePageResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetHostedProfilePageResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetHostedProfilePageResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetHostedPaymentPageResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetHostedPaymentPageResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetHostedPaymentPageResponse> for AnyResponse {
+    fn from(response: GetHostedPaymentPageResponse) -> Self {
+        Self::GetHostedPaymentPageResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetHostedPaymentPageResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetHostedPaymentPageResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetUnsettledTransactionListResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetUnsettledTransactionListResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetUnsettledTransactionListResponse> for AnyResponse {
+    fn from(response: GetUnsettledTransactionListResponse) -> Self {
+        Self::GetUnsettledTransactionListResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetUnsettledTransactionListResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetUnsettledTransactionListResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for MobileDeviceRegistrationResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::MobileDeviceRegistrationResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<MobileDeviceRegistrationResponse> for AnyResponse {
+    fn from(response: MobileDeviceRegistrationResponse) -> Self {
+        Self::MobileDeviceRegistrationResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for MobileDeviceRegistrationResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::MobileDeviceRegistrationResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for MobileDeviceLoginPinResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::MobileDeviceLoginPinResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<MobileDeviceLoginPinResponse> for AnyResponse {
+    fn from(response: MobileDeviceLoginPinResponse) -> Self {
+        Self::MobileDeviceLoginPinResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for MobileDeviceLoginPinResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::MobileDeviceLoginPinResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for MobileDeviceLoginVerifyPinResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::MobileDeviceLoginVerifyPinResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<MobileDeviceLoginVerifyPinResponse> for AnyResponse {
+    fn from(response: MobileDeviceLoginVerifyPinResponse) -> Self {
+        Self::MobileDeviceLoginVerifyPinResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for MobileDeviceLoginVerifyPinResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::MobileDeviceLoginVerifyPinResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for MobileDeviceLoginVerifyChallengeResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::MobileDeviceLoginVerifyChallengeResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<MobileDeviceLoginVerifyChallengeResponse> for AnyResponse {
+    fn from(response: MobileDeviceLoginVerifyChallengeResponse) -> Self {
+        Self::MobileDeviceLoginVerifyChallengeResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for MobileDeviceLoginVerifyChallengeResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::MobileDeviceLoginVerifyChallengeResponse(response) => {
+                Ok(response)
+            }
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for MobileDeviceMfaLoginResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::MobileDeviceMfaLoginResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<MobileDeviceMfaLoginResponse> for AnyResponse {
+    fn from(response: MobileDeviceMfaLoginResponse) -> Self {
+        Self::MobileDeviceMfaLoginResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for MobileDeviceMfaLoginResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::MobileDeviceMfaLoginResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for LogoutResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::LogoutResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<LogoutResponse> for AnyResponse {
+    fn from(response: LogoutResponse) -> Self {
+        Self::LogoutResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for LogoutResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::LogoutResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for SendCustomerTransactionReceiptResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::SendCustomerTransactionReceiptResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<SendCustomerTransactionReceiptResponse> for AnyResponse {
+    fn from(response: SendCustomerTransactionReceiptResponse) -> Self {
+        Self::SendCustomerTransactionReceiptResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for SendCustomerTransactionReceiptResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::SendCustomerTransactionReceiptResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbGetSubscriptionListResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbGetSubscriptionListResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbGetSubscriptionListResponse> for AnyResponse {
+    fn from(response: ArbGetSubscriptionListResponse) -> Self {
+        Self::ArbGetSubscriptionListResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbGetSubscriptionListResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbGetSubscriptionListResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerPaymentProfileListResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileListResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerPaymentProfileListResponse> for AnyResponse {
+    fn from(response: GetCustomerPaymentProfileListResponse) -> Self {
+        Self::GetCustomerPaymentProfileListResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerPaymentProfileListResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileListResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for ArbGetSubscriptionResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::ArbGetSubscriptionResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<ArbGetSubscriptionResponse> for AnyResponse {
+    fn from(response: ArbGetSubscriptionResponse) -> Self {
+        Self::ArbGetSubscriptionResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for ArbGetSubscriptionResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::ArbGetSubscriptionResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetAuJobSummaryResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetAuJobSummaryResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetAuJobSummaryResponse> for AnyResponse {
+    fn from(response: GetAuJobSummaryResponse) -> Self {
+        Self::GetAuJobSummaryResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetAuJobSummaryResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetAuJobSummaryResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetAuJobDetailsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetAuJobDetailsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetAuJobDetailsResponse> for AnyResponse {
+    fn from(response: GetAuJobDetailsResponse) -> Self {
+        Self::GetAuJobDetailsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetAuJobDetailsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetAuJobDetailsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetMerchantDetailsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetMerchantDetailsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetMerchantDetailsResponse> for AnyResponse {
+    fn from(response: GetMerchantDetailsResponse) -> Self {
+        Self::GetMerchantDetailsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetMerchantDetailsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetMerchantDetailsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for UpdateMerchantDetailsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::UpdateMerchantDetailsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<UpdateMerchantDetailsResponse> for AnyResponse {
+    fn from(response: UpdateMerchantDetailsResponse) -> Self {
+        Self::UpdateMerchantDetailsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for UpdateMerchantDetailsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::UpdateMerchantDetailsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetCustomerPaymentProfileNonceResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileNonceResponse(response) => {
+                Some(response)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl From<GetCustomerPaymentProfileNonceResponse> for AnyResponse {
+    fn from(response: GetCustomerPaymentProfileNonceResponse) -> Self {
+        Self::GetCustomerPaymentProfileNonceResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetCustomerPaymentProfileNonceResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetCustomerPaymentProfileNonceResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for GetAdDetailsResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::GetAdDetailsResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<GetAdDetailsResponse> for AnyResponse {
+    fn from(response: GetAdDetailsResponse) -> Self {
+        Self::GetAdDetailsResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for GetAdDetailsResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::GetAdDetailsResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
+}
+
+impl crate::api::ApiResponse for SaveDeviceSnResponse {
+    fn messages(&self) -> &Messages {
+        &self.messages
+    }
+    fn from_any(any: &AnyResponse) -> Option<&Self> {
+        match any {
+            AnyResponse::SaveDeviceSnResponse(response) => Some(response),
+            _ => None,
+        }
+    }
+}
+
+impl From<SaveDeviceSnResponse> for AnyResponse {
+    fn from(response: SaveDeviceSnResponse) -> Self {
+        Self::SaveDeviceSnResponse(response)
+    }
+}
+
+impl TryFrom<AnyResponse> for SaveDeviceSnResponse {
+    type Error = AnyResponse;
+    fn try_from(any: AnyResponse) -> Result<Self, AnyResponse> {
+        match any {
+            AnyResponse::SaveDeviceSnResponse(response) => Ok(response),
+            other => Err(other),
+        }
+    }
 }
 
 /// Invokes `$callback!` with the path of every request type.

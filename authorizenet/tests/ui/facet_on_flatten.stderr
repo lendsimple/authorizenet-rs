@@ -1,0 +1,5 @@
+error: facets do not apply to `flatten` or `choice` fields; put them on the inner type
+  --> tests/ui/facet_on_flatten.rs:10:21
+   |
+10 |     #[anet(flatten, max_length = 3)]
+   |                     ^^^^^^^^^^

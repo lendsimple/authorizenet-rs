@@ -16,7 +16,9 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use heck::{ToSnakeCase, ToUpperCamelCase};
 use serde::Deserialize;
 
-use crate::xsd::{Choice, ComplexType, Element, ElementType, Max, Particle, Schema, SimpleType};
+use crate::xsd::{
+    Choice, ComplexType, Element, ElementType, Facets, Max, Particle, Schema, SimpleType,
+};
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -97,6 +99,7 @@ pub struct ChoiceVariant {
     pub xml: String,
     pub ty: RustType,
     pub sensitive: bool,
+    pub facets: Facets,
 }
 
 #[derive(Debug)]
@@ -123,6 +126,10 @@ pub struct Field {
     pub card: Card,
     pub sensitive: bool,
     pub doc: Option<String>,
+    /// Facets of each value (of each item, for lists).
+    pub facets: Facets,
+    /// For lists: how many items the XSD allows.
+    pub occurs: Option<(u32, Max)>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -161,10 +168,15 @@ pub enum Card {
 
 /// How an element's type maps to Rust.
 enum Resolved {
-    /// A single value of this type.
-    Value(RustType),
+    /// A single value of this type, with the facets of its simple type.
+    Value(RustType, Facets),
     /// A wrapper type: a `Vec` of the item element.
-    Wrapped { item: String, item_ty: RustType },
+    Wrapped {
+        item: String,
+        item_ty: RustType,
+        item_facets: Facets,
+        item_occurs: (u32, Max),
+    },
 }
 
 pub fn build(schema: &Schema, overrides: &Overrides) -> Result<Model, String> {
@@ -375,8 +387,8 @@ impl<'s> Builder<'s> {
     ) -> Result<(), String> {
         let mut variants = Vec::new();
         for m in &choice.members {
-            let ty = match self.resolve(&name, &m.name, &m.ty)? {
-                Resolved::Value(ty) => ty,
+            let (ty, facets) = match self.resolve(&name, &m.name, &m.ty)? {
+                Resolved::Value(ty, facets) => (ty, facets),
                 Resolved::Wrapped { .. } => {
                     return Err(format!("{origin}: list member {} in a choice", m.name));
                 }
@@ -386,6 +398,7 @@ impl<'s> Builder<'s> {
                 xml: m.name.clone(),
                 ty,
                 sensitive: self.ov.sensitive.contains(&m.name),
+                facets,
             });
         }
         self.model.choices.push(ChoiceDef {
@@ -446,6 +459,8 @@ impl<'s> Builder<'s> {
                     card: Card::Required,
                     sensitive: false,
                     doc: None,
+                    facets: Facets::default(),
+                    occurs: None,
                 });
             }
         }
@@ -453,8 +468,8 @@ impl<'s> Builder<'s> {
             fields.extend(self.particle_fields(&name, particle)?);
         }
         for attr in &ct.attributes {
-            let ty = match self.resolve(&name, &attr.name, &attr.ty)? {
-                Resolved::Value(ty) => ty,
+            let (ty, facets) = match self.resolve(&name, &attr.name, &attr.ty)? {
+                Resolved::Value(ty, facets) => (ty, facets),
                 Resolved::Wrapped { .. } => return Err(format!("{origin}: list attribute")),
             };
             fields.push(Field {
@@ -469,6 +484,8 @@ impl<'s> Builder<'s> {
                 },
                 sensitive: false,
                 doc: None,
+                facets,
+                occurs: None,
             });
         }
         if request && root.is_none() {
@@ -514,35 +531,39 @@ impl<'s> Builder<'s> {
                     card,
                     sensitive: false,
                     doc: None,
+                    facets: Facets::default(),
+                    occurs: None,
                 }])
             }
         }
     }
 
     fn element_field(&mut self, owner: &str, e: &Element) -> Result<Field, String> {
-        let (kind, ty, card) = match self.resolve(owner, &e.name, &e.ty)? {
-            Resolved::Wrapped { item, item_ty } => {
+        let (kind, ty, card, facets, occurs) = match self.resolve(owner, &e.name, &e.ty)? {
+            Resolved::Wrapped {
+                item,
+                item_ty,
+                item_facets,
+                item_occurs,
+            } => {
                 if e.max.is_many() {
                     return Err(format!("{owner}.{}: repeated list wrapper", e.name));
                 }
-                (
-                    FieldKind::Wrapped {
-                        item,
-                        keep_empty: e.min > 0,
-                    },
-                    item_ty,
-                    Card::List,
-                )
-            }
-            Resolved::Value(ty) => {
-                let card = if e.max.is_many() {
-                    Card::List
-                } else if e.min == 0 {
-                    Card::Optional
-                } else {
-                    Card::Required
+                let kind = FieldKind::Wrapped {
+                    item,
+                    keep_empty: e.min > 0,
                 };
-                (FieldKind::Element, ty, card)
+                (kind, item_ty, Card::List, item_facets, Some(item_occurs))
+            }
+            Resolved::Value(ty, facets) => {
+                let (card, occurs) = if e.max.is_many() {
+                    (Card::List, Some((e.min, e.max)))
+                } else if e.min == 0 {
+                    (Card::Optional, None)
+                } else {
+                    (Card::Required, None)
+                };
+                (FieldKind::Element, ty, card, facets, occurs)
             }
         };
         Ok(Field {
@@ -553,6 +574,8 @@ impl<'s> Builder<'s> {
             card,
             sensitive: self.ov.sensitive.contains(&e.name),
             doc: e.doc.clone(),
+            facets,
+            occurs,
         })
     }
 
@@ -560,28 +583,31 @@ impl<'s> Builder<'s> {
     /// `owner` + `elem`; the item of an anonymous list wrapper is named `owner` + item.
     fn resolve(&mut self, owner: &str, elem: &str, ty: &ElementType) -> Result<Resolved, String> {
         let context = self.anonymous_name(format!("{owner}{}", upper(elem)));
+        let named = |ty: RustType| Ok(Resolved::Value(ty, Facets::default()));
         match ty {
-            ElementType::Any => Ok(Resolved::Value(RustType::Raw)),
-            ElementType::Named(q) if q.starts_with("xs:") => Ok(Resolved::Value(builtin(q)?)),
+            ElementType::Any => named(RustType::Raw),
+            ElementType::Named(q) if q.starts_with("xs:") => named(builtin(q)?),
             ElementType::Named(q) => {
                 let name = local(q);
                 if self.simple.contains_key(name) {
-                    return Ok(Resolved::Value(self.named_simple(name)?));
+                    let (ty, facets) = self.named_simple(name)?;
+                    return Ok(Resolved::Value(ty, facets));
                 }
                 if let Some(item) = self.wrappers.get(name).copied() {
                     return self.wrapped(owner, item);
                 }
                 if self.complex.contains_key(name) {
-                    return Ok(Resolved::Value(RustType::Named(self.type_name(name))));
+                    return named(RustType::Named(self.type_name(name)));
                 }
                 Err(format!("unknown type {q}"))
             }
             ElementType::Simple(st) => {
                 if st.enumeration.is_empty() {
-                    return Ok(Resolved::Value(self.simple_base(st)?));
+                    let (ty, facets) = self.simple_base(st)?;
+                    return Ok(Resolved::Value(ty, facets));
                 }
                 self.push_enum(context.clone(), context.clone(), st)?;
-                Ok(Resolved::Value(RustType::Named(context)))
+                named(RustType::Named(context))
             }
             ElementType::Complex(ct) => {
                 if let Some(item) = wrapper_item(ct) {
@@ -593,34 +619,38 @@ impl<'s> Builder<'s> {
                 } else {
                     self.push_struct(context.clone(), context.clone(), ct, None)?;
                 }
-                Ok(Resolved::Value(RustType::Named(context)))
+                named(RustType::Named(context))
             }
         }
     }
 
     fn wrapped(&mut self, owner: &str, item: &Element) -> Result<Resolved, String> {
         match self.resolve(owner, &item.name, &item.ty)? {
-            Resolved::Value(item_ty) => Ok(Resolved::Wrapped {
+            Resolved::Value(item_ty, item_facets) => Ok(Resolved::Wrapped {
                 item: item.name.clone(),
                 item_ty,
+                item_facets,
+                item_occurs: (item.min, item.max),
             }),
             Resolved::Wrapped { .. } => Err(format!("{owner}: nested list wrapper {}", item.name)),
         }
     }
 
-    fn named_simple(&mut self, name: &str) -> Result<RustType, String> {
+    fn named_simple(&mut self, name: &str) -> Result<(RustType, Facets), String> {
         let st = *self.simple.get(name).expect("checked");
         if !st.enumeration.is_empty() {
-            return Ok(RustType::Named(self.type_name(name)));
+            return Ok((RustType::Named(self.type_name(name)), Facets::default()));
         }
         self.simple_base(st)
     }
 
-    fn simple_base(&mut self, st: &SimpleType) -> Result<RustType, String> {
+    /// The built-in a simple type restricts, with the facets of the whole chain.
+    fn simple_base(&mut self, st: &SimpleType) -> Result<(RustType, Facets), String> {
         if st.base.starts_with("xs:") {
-            builtin(&st.base)
+            Ok((builtin(&st.base)?, st.facets.clone()))
         } else {
-            self.named_simple(local(&st.base))
+            let (ty, base_facets) = self.named_simple(local(&st.base))?;
+            Ok((ty, st.facets.over(&base_facets)))
         }
     }
 
@@ -738,6 +768,8 @@ impl<'s> Builder<'s> {
                     card: Card::Optional,
                     sensitive: false,
                     doc: Some("Not in the XSD, but sent by the API.".to_owned()),
+                    facets: Facets::default(),
+                    occurs: None,
                 },
             );
         }

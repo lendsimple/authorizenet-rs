@@ -38,6 +38,29 @@ pub struct Facets {
     pub fraction_digits: Option<u32>,
 }
 
+impl Facets {
+    /// These facets, with any that are unset taken from `base` (a restriction keeps its
+    /// base type's facets unless it overrides them).
+    pub fn over(&self, base: &Facets) -> Facets {
+        Facets {
+            length: self.length.or(base.length),
+            min_length: self.min_length.or(base.min_length),
+            max_length: self.max_length.or(base.max_length),
+            pattern: self.pattern.clone().or_else(|| base.pattern.clone()),
+            min_inclusive: self
+                .min_inclusive
+                .clone()
+                .or_else(|| base.min_inclusive.clone()),
+            max_inclusive: self
+                .max_inclusive
+                .clone()
+                .or_else(|| base.max_inclusive.clone()),
+            total_digits: self.total_digits.or(base.total_digits),
+            fraction_digits: self.fraction_digits.or(base.fraction_digits),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct ComplexType {
     pub name: Option<String>,

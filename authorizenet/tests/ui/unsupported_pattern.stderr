@@ -1,0 +1,5 @@
+error: only patterns of the form `[class]+` are supported, e.g. "[0-9a-zA-Z]+"
+ --> tests/ui/unsupported_pattern.rs:5:22
+  |
+5 |     #[anet(pattern = "[0-9]{3}")]
+  |                      ^^^^^^^^^^

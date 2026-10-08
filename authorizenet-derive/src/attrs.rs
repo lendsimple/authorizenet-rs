@@ -4,6 +4,8 @@ use proc_macro2::Span;
 use syn::meta::ParseNestedMeta;
 use syn::{Attribute, LitStr, Result};
 
+use crate::facets::Facets;
+
 /// Attributes on the struct or enum itself.
 #[derive(Default)]
 pub struct ContainerAttrs {
@@ -47,6 +49,7 @@ pub struct FieldAttrs {
     pub item_span: Option<Span>,
     pub keep_empty: Option<Span>,
     pub sensitive: bool,
+    pub facets: Facets,
 }
 
 impl FieldAttrs {
@@ -54,6 +57,9 @@ impl FieldAttrs {
         let mut out = Self::default();
         for attr in anet_attrs(attrs) {
             attr.parse_nested_meta(|meta| {
+                if out.facets.parse(&meta)? {
+                    return Ok(());
+                }
                 let span = meta.path.segments[0].ident.span();
                 if meta.path.is_ident("rename") {
                     out.rename = Some(meta.value()?.parse::<LitStr>()?.value());
@@ -134,6 +140,7 @@ pub struct VariantAttrs {
     pub value: Option<String>,
     pub other: bool,
     pub sensitive: bool,
+    pub facets: Facets,
 }
 
 impl VariantAttrs {
@@ -141,6 +148,9 @@ impl VariantAttrs {
         let mut out = Self::default();
         for attr in anet_attrs(attrs) {
             attr.parse_nested_meta(|meta| {
+                if out.facets.parse(&meta)? {
+                    return Ok(());
+                }
                 if meta.path.is_ident("rename") {
                     out.rename = Some(meta.value()?.parse::<LitStr>()?.value());
                 } else if meta.path.is_ident("value") {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createTransactionResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+    <refId>123456</refId>
+    <messages>
+        <resultCode>Error</resultCode>
+        <message>
+            <code>E00027</code>
+            <text>The transaction was unsuccessful.</text>
+        </message>
+    </messages>
+    <transactionResponse>
+        <responseCode>2</responseCode>
+        <authCode />
+        <avsResultCode>Y</avsResultCode>
+        <cvvResultCode>P</cvvResultCode>
+        <cavvResultCode>2</cavvResultCode>
+        <transId>40000000001</transId>
+        <refTransID />
+        <transHash />
+        <testRequest>0</testRequest>
+        <accountNumber>XXXX0027</accountNumber>
+        <accountType>Visa</accountType>
+        <errors>
+            <error>
+                <errorCode>2</errorCode>
+                <errorText>This transaction has been declined.</errorText>
+            </error>
+        </errors>
+        <transHashSha2 />
+        <networkTransId>123456789NNNH</networkTransId>
+    </transactionResponse>
+</createTransactionResponse>

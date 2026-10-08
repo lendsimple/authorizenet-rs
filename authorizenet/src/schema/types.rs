@@ -52,11 +52,11 @@ pub enum PaymentMasked {
 #[derive(Clone, PartialEq, AnetXml)]
 #[non_exhaustive]
 pub enum MerchantCredential {
-    #[anet(sensitive)]
+    #[anet(sensitive, max_length = 16)]
     TransactionKey(String),
     #[anet(sensitive)]
     SessionToken(String),
-    #[anet(sensitive)]
+    #[anet(sensitive, max_length = 40)]
     Password(String),
     ImpersonationAuthentication(ImpersonationAuthentication),
     FingerPrint(FingerPrint),
@@ -91,7 +91,9 @@ pub enum AuDetail {
 #[derive(Clone, PartialEq, AnetXml)]
 #[non_exhaustive]
 pub enum TransactionReference {
+    #[anet(pattern = "[0-9]+")]
     TransId(String),
+    #[anet(max_length = 50)]
     TransrefId(String),
 }
 
@@ -116,8 +118,11 @@ pub struct ArrayOfSetting {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct DriversLicense {
+    #[anet(min_length = 5, max_length = 20)]
     pub number: String,
+    #[anet(min_length = 2, max_length = 2)]
     pub state: String,
+    #[anet(min_length = 8, max_length = 10)]
     pub date_of_birth: String,
 }
 
@@ -126,8 +131,11 @@ pub struct DriversLicense {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct DriversLicenseMasked {
+    #[anet(length = 8)]
     pub number: String,
+    #[anet(min_length = 2, max_length = 2)]
     pub state: String,
+    #[anet(min_length = 8, max_length = 10)]
     pub date_of_birth: String,
 }
 
@@ -136,13 +144,21 @@ pub struct DriversLicenseMasked {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct NameAndAddress {
+    #[anet(max_length = 50)]
     pub first_name: Option<String>,
+    #[anet(max_length = 50)]
     pub last_name: Option<String>,
+    #[anet(max_length = 50)]
     pub company: Option<String>,
+    #[anet(max_length = 60)]
     pub address: Option<String>,
+    #[anet(max_length = 40)]
     pub city: Option<String>,
+    #[anet(max_length = 40)]
     pub state: Option<String>,
+    #[anet(max_length = 20)]
     pub zip: Option<String>,
+    #[anet(max_length = 60)]
     pub country: Option<String>,
 }
 
@@ -156,6 +172,7 @@ pub struct MerchantContact {
     pub merchant_city: Option<String>,
     pub merchant_state: Option<String>,
     pub merchant_zip: Option<String>,
+    #[anet(max_length = 20)]
     pub merchant_phone: Option<String>,
 }
 
@@ -187,8 +204,9 @@ pub struct TransRetailInfo {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct CreditCardSimple {
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 4, max_length = 16)]
     pub card_number: String,
+    #[anet(min_length = 4, max_length = 7)]
     pub expiration_date: String,
 }
 
@@ -199,7 +217,7 @@ pub struct CreditCardSimple {
 pub struct CreditCard {
     #[anet(flatten)]
     pub credit_card_simple: CreditCardSimple,
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 3, max_length = 4, pattern = "[0-9]+")]
     pub card_code: Option<String>,
     pub is_payment_token: Option<bool>,
     pub cryptogram: Option<String>,
@@ -213,11 +231,13 @@ pub struct CreditCard {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct CreditCardMasked {
-    #[anet(sensitive)]
+    #[anet(sensitive, length = 8)]
     pub card_number: String,
+    #[anet(min_length = 4, max_length = 7)]
     pub expiration_date: String,
     pub card_type: Option<String>,
     pub card_art: Option<CardArt>,
+    #[anet(length = 6)]
     pub issuer_number: Option<String>,
     pub is_payment_token: Option<bool>,
 }
@@ -237,13 +257,16 @@ pub struct CcAuthentication {
 #[non_exhaustive]
 pub struct BankAccount {
     pub account_type: Option<BankAccountType>,
-    #[anet(sensitive)]
+    #[anet(sensitive, max_length = 9)]
     pub routing_number: String,
-    #[anet(sensitive)]
+    #[anet(sensitive, max_length = 17)]
     pub account_number: String,
+    #[anet(max_length = 22)]
     pub name_on_account: String,
     pub echeck_type: Option<EcheckType>,
+    #[anet(max_length = 50)]
     pub bank_name: Option<String>,
+    #[anet(max_length = 15)]
     pub check_number: Option<String>,
 }
 
@@ -253,12 +276,14 @@ pub struct BankAccount {
 #[non_exhaustive]
 pub struct BankAccountMasked {
     pub account_type: Option<BankAccountType>,
-    #[anet(sensitive)]
+    #[anet(sensitive, length = 8)]
     pub routing_number: String,
-    #[anet(sensitive)]
+    #[anet(sensitive, length = 8)]
     pub account_number: String,
+    #[anet(max_length = 22)]
     pub name_on_account: String,
     pub echeck_type: Option<EcheckType>,
+    #[anet(max_length = 50)]
     pub bank_name: Option<String>,
 }
 
@@ -291,6 +316,7 @@ pub struct Payment {
 pub struct TokenMasked {
     pub token_source: Option<String>,
     pub token_number: String,
+    #[anet(min_length = 4, max_length = 7)]
     pub expiration_date: String,
     pub token_requestor_id: Option<String>,
 }
@@ -300,30 +326,39 @@ pub struct TokenMasked {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct Order {
+    #[anet(max_length = 20)]
     pub invoice_number: Option<String>,
+    #[anet(max_length = 255)]
     pub description: Option<String>,
     pub discount_amount: Option<Decimal>,
     pub tax_is_after_discount: Option<bool>,
+    #[anet(max_length = 3)]
     pub total_tax_type_code: Option<String>,
-    #[anet(rename = "purchaserVATRegistrationNumber")]
+    #[anet(rename = "purchaserVATRegistrationNumber", max_length = 21)]
     pub purchaser_vat_registration_number: Option<String>,
-    #[anet(rename = "merchantVATRegistrationNumber")]
+    #[anet(rename = "merchantVATRegistrationNumber", max_length = 21)]
     pub merchant_vat_registration_number: Option<String>,
+    #[anet(max_length = 15)]
     pub vat_invoice_reference_number: Option<String>,
+    #[anet(max_length = 17)]
     pub purchaser_code: Option<String>,
+    #[anet(max_length = 4)]
     pub summary_commodity_code: Option<String>,
     #[anet(rename = "purchaseOrderDateUTC")]
     pub purchase_order_date_utc: Option<XmlDate>,
+    #[anet(max_length = 25)]
     pub supplier_order_reference: Option<String>,
+    #[anet(max_length = 36)]
     pub authorized_contact_name: Option<String>,
+    #[anet(max_length = 25)]
     pub card_acceptor_ref_number: Option<String>,
-    #[anet(rename = "amexDataTAA1")]
+    #[anet(rename = "amexDataTAA1", max_length = 40)]
     pub amex_data_taa1: Option<String>,
-    #[anet(rename = "amexDataTAA2")]
+    #[anet(rename = "amexDataTAA2", max_length = 40)]
     pub amex_data_taa2: Option<String>,
-    #[anet(rename = "amexDataTAA3")]
+    #[anet(rename = "amexDataTAA3", max_length = 40)]
     pub amex_data_taa3: Option<String>,
-    #[anet(rename = "amexDataTAA4")]
+    #[anet(rename = "amexDataTAA4", max_length = 40)]
     pub amex_data_taa4: Option<String>,
 }
 
@@ -335,6 +370,7 @@ pub struct OrderEx {
     #[anet(flatten)]
     #[builder(default)]
     pub order: Order,
+    #[anet(max_length = 25)]
     pub purchase_order_number: Option<String>,
 }
 
@@ -344,11 +380,16 @@ pub struct OrderEx {
 #[non_exhaustive]
 pub struct Customer {
     pub r#type: Option<CustomerType>,
+    #[anet(max_length = 20)]
     pub id: Option<String>,
+    #[anet(max_length = 255)]
     pub email: Option<String>,
+    #[anet(max_length = 25)]
     pub phone_number: Option<String>,
+    #[anet(max_length = 25)]
     pub fax_number: Option<String>,
     pub drivers_license: Option<DriversLicense>,
+    #[anet(min_length = 9, max_length = 9, pattern = "[0-9]+")]
     pub tax_id: Option<String>,
 }
 
@@ -358,9 +399,12 @@ pub struct Customer {
 #[non_exhaustive]
 pub struct CustomerData {
     pub r#type: Option<CustomerType>,
+    #[anet(max_length = 20)]
     pub id: Option<String>,
+    #[anet(max_length = 255)]
     pub email: Option<String>,
     pub drivers_license: Option<DriversLicense>,
+    #[anet(min_length = 8, max_length = 9)]
     pub tax_id: Option<String>,
 }
 
@@ -369,9 +413,11 @@ pub struct CustomerData {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct MerchantAuthentication {
+    #[anet(max_length = 25)]
     pub name: Option<String>,
     #[anet(choice)]
     pub credential: Option<MerchantCredential>,
+    #[anet(max_length = 60)]
     pub mobile_device_id: Option<String>,
     #[anet(sensitive)]
     pub enc_password: Option<String>,
@@ -426,6 +472,7 @@ pub struct PaymentDetails {
 #[non_exhaustive]
 pub struct WebCheckOutData {
     pub r#type: WebCheckOutType,
+    #[anet(min_length = 1, max_length = 64)]
     pub id: String,
     pub token: Option<WebCheckOutDataTypeToken>,
     pub bank_token: Option<BankAccount>,
@@ -445,7 +492,9 @@ pub struct SecurePaymentContainerError {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ImpersonationAuthentication {
+    #[anet(max_length = 25)]
     pub partner_login_id: String,
+    #[anet(max_length = 16)]
     pub partner_transaction_key: String,
 }
 
@@ -453,6 +502,7 @@ pub struct ImpersonationAuthentication {
 #[derive(Clone, PartialEq, AnetXml, Builder)]
 #[non_exhaustive]
 pub struct PaymentScheduleInterval {
+    #[anet(min = "1", max = "32000")]
     pub length: i16,
     pub unit: ArbSubscriptionUnit,
 }
@@ -463,7 +513,9 @@ pub struct PaymentScheduleInterval {
 pub struct PaymentSchedule {
     pub interval: Option<PaymentScheduleInterval>,
     pub start_date: Option<XmlDate>,
+    #[anet(min = "1", max = "32000")]
     pub total_occurrences: Option<i16>,
+    #[anet(min = "0", max = "32000")]
     pub trial_occurrences: Option<i16>,
 }
 
@@ -472,9 +524,12 @@ pub struct PaymentSchedule {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ArbSubscription {
+    #[anet(max_length = 50)]
     pub name: Option<String>,
     pub payment_schedule: Option<PaymentSchedule>,
+    #[anet(min = "0.01", fraction_digits = 4)]
     pub amount: Option<Decimal>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub trial_amount: Option<Decimal>,
     pub payment: Option<Payment>,
     pub order: Option<Order>,
@@ -489,9 +544,12 @@ pub struct ArbSubscription {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ArbSubscriptionMasked {
+    #[anet(max_length = 50)]
     pub name: Option<String>,
     pub payment_schedule: Option<PaymentSchedule>,
+    #[anet(min = "0.01", fraction_digits = 4)]
     pub amount: Option<Decimal>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub trial_amount: Option<Decimal>,
     pub status: Option<ArbSubscriptionStatus>,
     pub profile: Option<SubscriptionCustomerProfile>,
@@ -516,7 +574,9 @@ pub struct SubscriptionCustomerProfile {
 #[derive(Clone, PartialEq, AnetXml, Builder)]
 #[non_exhaustive]
 pub struct SubscriptionPayment {
+    #[anet(min = "0")]
     pub id: i32,
+    #[anet(min = "0")]
     pub pay_num: i32,
 }
 
@@ -525,7 +585,7 @@ pub struct SubscriptionPayment {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct FraudInformation {
-    #[anet(wrapper, item = "fraudFilter", keep_empty)]
+    #[anet(wrapper, item = "fraudFilter", keep_empty, min_occurs = 1, max_occurs = 1000)]
     #[builder(default)]
     pub fraud_filter_list: Vec<String>,
     pub fraud_action: String,
@@ -536,9 +596,13 @@ pub struct FraudInformation {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct MobileDevice {
+    #[anet(max_length = 60)]
     pub mobile_device_id: String,
+    #[anet(max_length = 60)]
     pub description: Option<String>,
+    #[anet(max_length = 20)]
     pub phone_number: Option<String>,
+    #[anet(max_length = 255)]
     pub device_platform: Option<String>,
     pub device_activation: Option<DeviceActivation>,
 }
@@ -548,16 +612,27 @@ pub struct MobileDevice {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct SubMerchant {
+    #[anet(max_length = 40)]
     pub identifier: String,
+    #[anet(max_length = 50)]
     pub doing_business_as: Option<String>,
+    #[anet(max_length = 40)]
     pub payment_service_provider_name: Option<String>,
+    #[anet(max_length = 20)]
     pub payment_service_facilitator: Option<String>,
+    #[anet(max_length = 40)]
     pub street_address: Option<String>,
+    #[anet(max_length = 20)]
     pub phone: Option<String>,
+    #[anet(max_length = 40)]
     pub email: Option<String>,
+    #[anet(max_length = 20)]
     pub postal_code: Option<String>,
+    #[anet(max_length = 30)]
     pub city: Option<String>,
+    #[anet(max_length = 10)]
     pub region_code: Option<String>,
+    #[anet(max_length = 10)]
     pub country_code: Option<String>,
 }
 
@@ -596,7 +671,7 @@ pub struct TransactionRequest {
     pub employee_id: Option<String>,
     /// Allowed values for settingName are: emailCustomer, merchantEmail, allowPartialAuth, headerEmailReceipt, footerEmailReceipt, recurringBilling, duplicateWindow, testRequest.
     pub transaction_settings: Option<ArrayOfSetting>,
-    #[anet(wrapper, item = "userField")]
+    #[anet(wrapper, item = "userField", max_occurs = 20)]
     #[builder(default)]
     pub user_fields: Vec<UserField>,
     pub surcharge: Option<ExtendedAmount>,
@@ -610,6 +685,7 @@ pub struct TransactionRequest {
     pub authorization_indicator_type: Option<AuthorizationIndicator>,
     pub tap_to_phone: Option<bool>,
     pub debt_repayment_indicator: Option<bool>,
+    #[anet(max_length = 1)]
     pub purchase_level: Option<String>,
     pub aft_information: Option<AftInfoBasic>,
     pub discount: Option<ExtendedAmount>,
@@ -748,6 +824,7 @@ pub struct CustomerPaymentProfile {
     pub customer_payment_profile_base: CustomerPaymentProfileBase,
     pub payment: Option<Payment>,
     pub drivers_license: Option<DriversLicense>,
+    #[anet(min_length = 8, max_length = 9)]
     pub tax_id: Option<String>,
     pub default_payment_profile: Option<bool>,
     pub subsequent_auth_information: Option<SubsequentAuthInformation>,
@@ -762,6 +839,7 @@ pub struct CustomerPaymentProfileEx {
     #[anet(flatten)]
     #[builder(default)]
     pub customer_payment_profile: CustomerPaymentProfile,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
 }
 
@@ -773,16 +851,21 @@ pub struct CustomerPaymentProfileMasked {
     #[anet(flatten)]
     #[builder(default)]
     pub customer_payment_profile_base: CustomerPaymentProfileBase,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: String,
     pub default_payment_profile: Option<bool>,
     pub payment: Option<PaymentMasked>,
     pub drivers_license: Option<DriversLicenseMasked>,
+    #[anet(length = 8)]
     pub tax_id: Option<String>,
-    #[anet(wrapper, item = "subscriptionId")]
+    #[anet(wrapper, item = "subscriptionId", pattern = "[0-9]+")]
     #[builder(default)]
     pub subscription_ids: Vec<String>,
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub original_network_trans_id: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub original_auth_amount: Option<Decimal>,
     pub exclude_from_account_updater: Option<bool>,
 }
@@ -792,8 +875,11 @@ pub struct CustomerPaymentProfileMasked {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct CustomerProfileBase {
+    #[anet(max_length = 20)]
     pub merchant_customer_id: Option<String>,
+    #[anet(max_length = 255)]
     pub description: Option<String>,
+    #[anet(max_length = 255)]
     pub email: Option<String>,
 }
 
@@ -828,6 +914,7 @@ pub struct CustomerProfileEx {
     #[anet(flatten)]
     #[builder(default)]
     pub customer_profile_base: CustomerProfileBase,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
 }
 
@@ -863,7 +950,9 @@ pub struct CustomerAddress {
     #[anet(flatten)]
     #[builder(default)]
     pub name_and_address: NameAndAddress,
+    #[anet(max_length = 25)]
     pub phone_number: Option<String>,
+    #[anet(max_length = 25)]
     pub fax_number: Option<String>,
     pub email: Option<String>,
 }
@@ -876,6 +965,7 @@ pub struct CustomerAddressEx {
     #[anet(flatten)]
     #[builder(default)]
     pub customer_address: CustomerAddress,
+    #[anet(pattern = "[0-9]+")]
     pub customer_address_id: Option<String>,
 }
 
@@ -884,8 +974,11 @@ pub struct CustomerAddressEx {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ExtendedAmount {
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub amount: Decimal,
+    #[anet(max_length = 31)]
     pub name: Option<String>,
+    #[anet(max_length = 255)]
     pub description: Option<String>,
 }
 
@@ -897,7 +990,9 @@ pub struct OtherTax {
     pub national_tax_amount: Option<Decimal>,
     pub local_tax_amount: Option<Decimal>,
     pub alternate_tax_amount: Option<Decimal>,
+    #[anet(max_length = 15)]
     pub alternate_tax_id: Option<String>,
+    #[anet(total_digits = 5, fraction_digits = 5)]
     pub vat_tax_rate: Option<Decimal>,
     pub vat_tax_amount: Option<Decimal>,
 }
@@ -907,30 +1002,49 @@ pub struct OtherTax {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct LineItem {
+    #[anet(min_length = 1, max_length = 31)]
     pub item_id: String,
+    #[anet(min_length = 1, max_length = 31)]
     pub name: String,
+    #[anet(max_length = 255)]
     pub description: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub quantity: Decimal,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub unit_price: Decimal,
     pub taxable: Option<bool>,
+    #[anet(max_length = 12)]
     pub unit_of_measure: Option<String>,
+    #[anet(max_length = 2)]
     pub type_of_supply: Option<String>,
+    #[anet(total_digits = 5, fraction_digits = 5)]
     pub tax_rate: Option<Decimal>,
+    #[anet(fraction_digits = 4)]
     pub tax_amount: Option<Decimal>,
     pub national_tax: Option<Decimal>,
     pub local_tax: Option<Decimal>,
+    #[anet(total_digits = 5, fraction_digits = 5)]
     pub vat_rate: Option<Decimal>,
+    #[anet(max_length = 20)]
     pub alternate_tax_id: Option<String>,
+    #[anet(max_length = 4)]
     pub alternate_tax_type: Option<String>,
+    #[anet(max_length = 4)]
     pub alternate_tax_type_applied: Option<String>,
+    #[anet(total_digits = 5, fraction_digits = 5)]
     pub alternate_tax_rate: Option<Decimal>,
     pub alternate_tax_amount: Option<Decimal>,
+    #[anet(fraction_digits = 4)]
     pub total_amount: Option<Decimal>,
+    #[anet(max_length = 12)]
     pub commodity_code: Option<String>,
+    #[anet(max_length = 255)]
     pub product_code: Option<String>,
-    #[anet(rename = "productSKU")]
+    #[anet(rename = "productSKU", max_length = 255)]
     pub product_sku: Option<String>,
+    #[anet(total_digits = 5, fraction_digits = 5)]
     pub discount_rate: Option<Decimal>,
+    #[anet(fraction_digits = 4)]
     pub discount_amount: Option<Decimal>,
     pub tax_included_in_total: Option<bool>,
     pub tax_is_after_discount: Option<bool>,
@@ -940,10 +1054,12 @@ pub struct LineItem {
 #[derive(Clone, PartialEq, AnetXml, Builder)]
 #[non_exhaustive]
 pub struct ProfileTransAmount {
+    #[anet(min = "0.01", fraction_digits = 4)]
     pub amount: Decimal,
     pub tax: Option<ExtendedAmount>,
     pub shipping: Option<ExtendedAmount>,
     pub duty: Option<ExtendedAmount>,
+    #[anet(max_occurs = 30)]
     #[builder(default)]
     pub line_items: Vec<LineItem>,
 }
@@ -955,14 +1071,18 @@ pub struct ProfileTransAmount {
 pub struct ProfileTransOrder {
     #[anet(flatten)]
     pub profile_trans_amount: ProfileTransAmount,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_shipping_address_id: Option<String>,
     pub order: Option<OrderEx>,
     pub tax_exempt: Option<bool>,
     pub recurring_billing: Option<bool>,
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 3, max_length = 4, pattern = "[0-9]+")]
     pub card_code: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub split_tender_id: Option<String>,
     pub processing_options: Option<ProcessingOptions>,
     pub subsequent_auth_information: Option<SubsequentAuthInformation>,
@@ -992,9 +1112,13 @@ pub struct ProfileTransAuthOnly {
 pub struct ProfileTransPriorAuthCapture {
     #[anet(flatten)]
     pub profile_trans_amount: ProfileTransAmount,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_shipping_address_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
 }
 
@@ -1005,6 +1129,7 @@ pub struct ProfileTransPriorAuthCapture {
 pub struct ProfileTransCaptureOnly {
     #[anet(flatten)]
     pub profile_trans_order: ProfileTransOrder,
+    #[anet(max_length = 6)]
     pub approval_code: String,
 }
 
@@ -1015,13 +1140,20 @@ pub struct ProfileTransCaptureOnly {
 pub struct ProfileTransRefund {
     #[anet(flatten)]
     pub profile_trans_amount: ProfileTransAmount,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_shipping_address_id: Option<String>,
+    #[anet(min_length = 8, max_length = 8)]
     pub credit_card_number_masked: Option<String>,
+    #[anet(min_length = 8, max_length = 8)]
     pub bank_routing_number_masked: Option<String>,
+    #[anet(min_length = 8, max_length = 8)]
     pub bank_account_number_masked: Option<String>,
     pub order: Option<OrderEx>,
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: Option<String>,
 }
 
@@ -1030,9 +1162,13 @@ pub struct ProfileTransRefund {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ProfileTransVoid {
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_shipping_address_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
 }
 
@@ -1041,6 +1177,7 @@ pub struct ProfileTransVoid {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct TransactionSummary {
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
     #[anet(rename = "submitTimeUTC")]
     pub submit_time_utc: XmlDateTime,
@@ -1069,10 +1206,12 @@ pub struct TransactionSummary {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct GetTransactionSummary {
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
     #[anet(rename = "submitTimeUTC")]
     pub submit_time_utc: XmlDateTime,
     pub transaction_status: String,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub settle_amount: Decimal,
     pub response_code: i32,
     pub response_reason_code: i32,
@@ -1085,6 +1224,7 @@ pub struct GetTransactionSummary {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ArbTransaction {
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: Option<String>,
     pub response: Option<String>,
     #[anet(rename = "submitTimeUTC")]
@@ -1107,8 +1247,11 @@ pub struct TransactionDetailsTag {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct TransactionDetails {
+    #[anet(pattern = "[0-9]+")]
     pub trans_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub ref_trans_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub split_tender_id: Option<String>,
     #[anet(rename = "submitTimeUTC")]
     pub submit_time_utc: XmlDateTime,
@@ -1119,11 +1262,13 @@ pub struct TransactionDetails {
     pub response_reason_code: i32,
     pub subscription: Option<SubscriptionPayment>,
     pub response_reason_description: String,
+    #[anet(max_length = 6)]
     pub auth_code: Option<String>,
-    #[anet(rename = "AVSResponse")]
+    #[anet(rename = "AVSResponse", max_length = 1)]
     pub avs_response: Option<String>,
+    #[anet(max_length = 1)]
     pub card_code_response: Option<String>,
-    #[anet(rename = "CAVVResponse")]
+    #[anet(rename = "CAVVResponse", max_length = 1)]
     pub cavv_response: Option<String>,
     #[anet(rename = "FDSFilterAction")]
     pub fds_filter_action: Option<String>,
@@ -1132,8 +1277,11 @@ pub struct TransactionDetails {
     pub fds_filters: Vec<FdsFilter>,
     pub batch: Option<BatchDetails>,
     pub order: Option<OrderEx>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub requested_amount: Option<Decimal>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub auth_amount: Decimal,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub settle_amount: Decimal,
     pub tax: Option<ExtendedAmount>,
     pub shipping: Option<ExtendedAmount>,
@@ -1141,6 +1289,7 @@ pub struct TransactionDetails {
     #[anet(wrapper, item = "lineItem")]
     #[builder(default)]
     pub line_items: Vec<LineItem>,
+    #[anet(fraction_digits = 4)]
     pub prepaid_balance_remaining: Option<Decimal>,
     pub tax_exempt: Option<bool>,
     pub payment: PaymentMasked,
@@ -1159,7 +1308,7 @@ pub struct TransactionDetails {
     #[builder(default)]
     pub returned_items: Vec<ReturnedItem>,
     pub solution: Option<Solution>,
-    #[anet(wrapper, item = "tag")]
+    #[anet(wrapper, item = "tag", min_occurs = 1)]
     #[builder(default)]
     pub emv_details: Vec<TransactionDetailsTag>,
     pub profile: Option<CustomerProfileId>,
@@ -1168,13 +1317,17 @@ pub struct TransactionDetails {
     pub tip: Option<ExtendedAmount>,
     pub other_tax: Option<OtherTax>,
     pub ship_from: Option<NameAndAddress>,
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub network_trans_id: Option<String>,
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub original_network_trans_id: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub original_auth_amount: Option<Decimal>,
     pub authorization_indicator: Option<String>,
     pub merchant_advice: Option<MerchantAdvice>,
     pub tap_to_phone: Option<bool>,
     pub debt_repayment_indicator: Option<bool>,
+    #[anet(max_length = 1)]
     pub purchase_level: Option<String>,
     pub aft_information: Option<AftInfoBasic>,
     pub discount: Option<ExtendedAmount>,
@@ -1195,6 +1348,7 @@ pub struct Solution {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ReturnedItem {
+    #[anet(pattern = "[0-9]+")]
     pub id: String,
     #[anet(rename = "dateUTC")]
     pub date_utc: XmlDateTime,
@@ -1217,6 +1371,7 @@ pub struct FdsFilter {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct BatchDetails {
+    #[anet(pattern = "[0-9]+")]
     pub batch_id: String,
     #[anet(rename = "settlementTimeUTC")]
     pub settlement_time_utc: Option<XmlDateTime>,
@@ -1322,7 +1477,7 @@ pub struct TransactionResponseSecureAcceptance {
 #[non_exhaustive]
 pub struct TransactionResponseEmvResponse {
     pub tlv_data: Option<String>,
-    #[anet(wrapper, item = "tag")]
+    #[anet(wrapper, item = "tag", min_occurs = 1)]
     #[builder(default)]
     pub tags: Vec<EmvTag>,
 }
@@ -1360,7 +1515,7 @@ pub struct TransactionResponse {
     #[anet(wrapper, item = "splitTenderPayment")]
     #[builder(default)]
     pub split_tender_payments: Vec<TransactionResponseSplitTenderPayment>,
-    #[anet(wrapper, item = "userField")]
+    #[anet(wrapper, item = "userField", max_occurs = 20)]
     #[builder(default)]
     pub user_fields: Vec<UserField>,
     pub ship_to: Option<NameAndAddress>,
@@ -1368,6 +1523,7 @@ pub struct TransactionResponse {
     pub emv_response: Option<TransactionResponseEmvResponse>,
     pub trans_hash_sha2: Option<String>,
     pub profile: Option<CustomerProfileId>,
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub network_trans_id: Option<String>,
     pub merchant_advice: Option<MerchantAdvice>,
 }
@@ -1377,8 +1533,11 @@ pub struct TransactionResponse {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct ContactDetail {
+    #[anet(max_length = 255)]
     pub email: Option<String>,
+    #[anet(max_length = 50)]
     pub first_name: Option<String>,
+    #[anet(max_length = 50)]
     pub last_name: Option<String>,
 }
 
@@ -1430,6 +1589,7 @@ pub struct Message {
 #[non_exhaustive]
 pub struct Messages {
     pub result_code: MessageType,
+    #[anet(min_occurs = 1)]
     #[builder(default)]
     pub message: Vec<Message>,
 }
@@ -1440,11 +1600,12 @@ pub struct Messages {
 #[non_exhaustive]
 pub struct CreateProfileResponse {
     pub messages: Messages,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
-    #[anet(wrapper, item = "numericString")]
+    #[anet(wrapper, item = "numericString", pattern = "[0-9]+")]
     #[builder(default)]
     pub customer_payment_profile_id_list: Vec<String>,
-    #[anet(wrapper, item = "numericString")]
+    #[anet(wrapper, item = "numericString", pattern = "[0-9]+")]
     #[builder(default)]
     pub customer_shipping_address_id_list: Vec<String>,
 }
@@ -1471,12 +1632,17 @@ pub struct TransactionListSorting {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct PayPal {
+    #[anet(max_length = 2048)]
     pub success_url: Option<String>,
+    #[anet(max_length = 2048)]
     pub cancel_url: Option<String>,
+    #[anet(max_length = 2)]
     pub paypal_lc: Option<String>,
+    #[anet(max_length = 127)]
     pub paypal_hdr_img: Option<String>,
+    #[anet(max_length = 6)]
     pub paypal_payflowcolor: Option<String>,
-    #[anet(rename = "payerID")]
+    #[anet(rename = "payerID", max_length = 255)]
     pub payer_id: Option<String>,
 }
 
@@ -1484,7 +1650,9 @@ pub struct PayPal {
 #[derive(Clone, PartialEq, AnetXml, Builder)]
 #[non_exhaustive]
 pub struct Paging {
+    #[anet(min = "1", max = "1000")]
     pub limit: i32,
+    #[anet(min = "1", max = "100000")]
     pub offset: i32,
 }
 
@@ -1514,6 +1682,7 @@ pub struct SubscriptionDetail {
     #[anet(sensitive)]
     pub account_number: Option<String>,
     pub invoice: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub amount: Decimal,
     pub currency_code: Option<String>,
     pub customer_profile_id: i32,
@@ -1539,8 +1708,10 @@ pub struct CustomerProfileSummary {
 #[non_exhaustive]
 pub struct CustomerProfilePayment {
     pub create_profile: Option<bool>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: Option<String>,
     pub payment_profile: Option<PaymentProfile>,
+    #[anet(pattern = "[0-9]+")]
     pub shipping_profile_id: Option<String>,
 }
 
@@ -1549,8 +1720,9 @@ pub struct CustomerProfilePayment {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct PaymentProfile {
+    #[anet(pattern = "[0-9]+")]
     pub payment_profile_id: String,
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 3, max_length = 4, pattern = "[0-9]+")]
     pub card_code: Option<String>,
 }
 
@@ -1572,7 +1744,9 @@ pub struct CustomerPaymentProfileListItem {
     pub customer_profile_id: i32,
     pub bill_to: CustomerAddress,
     pub payment: PaymentMasked,
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub original_network_trans_id: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub original_auth_amount: Option<Decimal>,
     pub exclude_from_account_updater: Option<bool>,
 }
@@ -1582,8 +1756,11 @@ pub struct CustomerPaymentProfileListItem {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct CustomerProfileId {
+    #[anet(pattern = "[0-9]+")]
     pub customer_profile_id: String,
+    #[anet(pattern = "[0-9]+")]
     pub customer_payment_profile_id: Option<String>,
+    #[anet(pattern = "[0-9]+")]
     pub customer_address_id: Option<String>,
 }
 
@@ -1664,7 +1841,9 @@ pub struct AuthorizationIndicator {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct SubsequentAuthInformation {
+    #[anet(max_length = 255, pattern = "[0-9a-zA-Z\\s]+")]
     pub original_network_trans_id: Option<String>,
+    #[anet(min = "0.00", fraction_digits = 4)]
     pub original_auth_amount: Option<Decimal>,
     pub reason: Option<MerchantInitTransReason>,
 }
@@ -1674,6 +1853,7 @@ pub struct SubsequentAuthInformation {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct MerchantAdvice {
+    #[anet(pattern = "[0-9a-zA-Z\\s]+")]
     pub code: String,
     pub description: Option<String>,
 }
@@ -1683,9 +1863,10 @@ pub struct MerchantAdvice {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct Processor {
+    #[anet(max_length = 255)]
     pub name: String,
     pub id: i32,
-    #[anet(wrapper, item = "cardType")]
+    #[anet(wrapper, item = "cardType", max_occurs = 30)]
     #[builder(default)]
     pub card_types: Vec<String>,
 }
@@ -1695,12 +1876,15 @@ pub struct Processor {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct WebCheckOutDataTypeToken {
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 4, max_length = 16)]
     pub card_number: String,
+    #[anet(min_length = 4, max_length = 7)]
     pub expiration_date: String,
-    #[anet(sensitive)]
+    #[anet(sensitive, min_length = 3, max_length = 4, pattern = "[0-9]+")]
     pub card_code: Option<String>,
+    #[anet(min_length = 1, max_length = 20)]
     pub zip: Option<String>,
+    #[anet(min_length = 1, max_length = 64)]
     pub full_name: Option<String>,
 }
 
@@ -1710,6 +1894,7 @@ pub struct WebCheckOutDataTypeToken {
 #[non_exhaustive]
 pub struct AftInfoBasic {
     pub aft_indicator: Option<bool>,
+    #[anet(max_length = 2)]
     pub business_application_id: Option<String>,
     pub recipient_information: Option<AftRecipientInformation>,
     pub sender_information: Option<AftSenderInformation>,
@@ -1720,15 +1905,25 @@ pub struct AftInfoBasic {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct AftRecipientInformation {
+    #[anet(max_length = 35)]
     pub first_name: Option<String>,
+    #[anet(max_length = 35)]
     pub middle_name: Option<String>,
+    #[anet(max_length = 35)]
     pub last_name: Option<String>,
+    #[anet(max_length = 50)]
     pub address: Option<String>,
+    #[anet(max_length = 25)]
     pub city: Option<String>,
+    #[anet(max_length = 2)]
     pub state: Option<String>,
+    #[anet(max_length = 10)]
     pub zip: Option<String>,
+    #[anet(max_length = 2)]
     pub country: Option<String>,
+    #[anet(max_length = 10)]
     pub account_id: Option<String>,
+    #[anet(max_length = 2)]
     pub account_type: Option<String>,
 }
 
@@ -1737,21 +1932,36 @@ pub struct AftRecipientInformation {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct AftSenderInformation {
+    #[anet(max_length = 35)]
     pub first_name: Option<String>,
+    #[anet(max_length = 35)]
     pub middle_name: Option<String>,
+    #[anet(max_length = 35)]
     pub last_name: Option<String>,
+    #[anet(max_length = 50)]
     pub name: Option<String>,
+    #[anet(max_length = 50)]
     pub address: Option<String>,
+    #[anet(max_length = 25)]
     pub city: Option<String>,
+    #[anet(max_length = 2)]
     pub state: Option<String>,
+    #[anet(max_length = 10)]
     pub zip: Option<String>,
+    #[anet(max_length = 2)]
     pub country: Option<String>,
+    #[anet(max_length = 25)]
     pub phone_number: Option<String>,
+    #[anet(max_length = 1)]
     pub r#type: Option<String>,
     pub account: Option<AftSenderAccountInformation>,
+    #[anet(min_length = 8, max_length = 10)]
     pub date_of_birth: Option<String>,
+    #[anet(max_length = 2)]
     pub identification_number: Option<String>,
+    #[anet(max_length = 4)]
     pub personal_id_type: Option<String>,
+    #[anet(max_length = 19)]
     pub reference_number: Option<String>,
 }
 
@@ -1760,7 +1970,10 @@ pub struct AftSenderInformation {
 #[builder(on(String, into))]
 #[non_exhaustive]
 pub struct AftSenderAccountInformation {
+    #[anet(max_length = 2)]
     pub funds_source: Option<String>,
+    #[anet(max_length = 20)]
     pub number: Option<String>,
+    #[anet(max_length = 2)]
     pub r#type: Option<String>,
 }

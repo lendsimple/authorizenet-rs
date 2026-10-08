@@ -11,6 +11,7 @@ use std::path::Path;
 use std::process::Command;
 
 use authorizenet::schema::MerchantAuthentication;
+use authorizenet::validate::Validate;
 use authorizenet::xml::{self, XmlError, XmlRoot};
 use common::{auth_fragment, compare_trees, fixture, fixtures_with_root_suffix, root_name};
 
@@ -29,6 +30,21 @@ macro_rules! request_dispatch {
                     let auth = auth_fragment(text).expect("request fixture has merchantAuthentication");
                     let auth: MerchantAuthentication = xml::from_slice_as(auth.as_bytes())?;
                     return xml::to_string_with_auth(&value, &auth);
+                }
+            )*
+            panic!("no generated request type has root <{root}>")
+        }
+    };
+}
+
+/// `fn validate_request(root, input) -> Result<(), String>` over every request type.
+macro_rules! validate_dispatch {
+    ($($ty:path),* $(,)?) => {
+        fn validate_request(root: &str, input: &[u8]) -> Result<(), String> {
+            $(
+                if root == <$ty as XmlRoot>::ROOT {
+                    let value: $ty = xml::from_slice_strict(input).map_err(|e| e.to_string())?;
+                    return value.validate().map_err(|e| e.to_string());
                 }
             )*
             panic!("no generated request type has root <{root}>")
@@ -56,6 +72,7 @@ macro_rules! response_dispatch {
 }
 
 authorizenet::__for_each_request!(request_dispatch);
+authorizenet::__for_each_request!(validate_dispatch);
 authorizenet::__for_each_response!(response_dispatch);
 
 type Reserialize = fn(&str, &[u8]) -> Result<String, XmlError>;
@@ -110,6 +127,26 @@ fn request_fixtures_round_trip() {
 #[test]
 fn response_fixtures_round_trip() {
     check_all("Response", reserialize_response);
+}
+
+/// The sample requests satisfy the XSD's facets, so validation does not reject
+/// realistic requests.
+#[test]
+fn request_fixtures_pass_validation() {
+    let mut failures = Vec::new();
+    for name in fixtures_with_root_suffix("Request") {
+        let input = fixture(&name);
+        match validate_request(&root_name(&input), &input) {
+            Ok(()) if INVALID_SAMPLE_DATA.contains(&name.as_str()) => {
+                failures.push(format!("{name}: expected a violation"))
+            }
+            Err(err) if !INVALID_SAMPLE_DATA.contains(&name.as_str()) => {
+                failures.push(format!("{name}: {err}"))
+            }
+            _ => {}
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
 
 /// Validates the serialized requests against the vendored XSD with `xmllint`, when
