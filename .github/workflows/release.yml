@@ -1,0 +1,58 @@
+name: Release
+
+# Publishes both crates to crates.io when a version tag such as `v0.1.0` is pushed.
+# See RELEASING.md.
+
+on:
+  push:
+    tags: ["v*"]
+
+# One release at a time, and never cancel one that has started publishing.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Create this environment in the repository settings; give it required reviewers
+    # to approve each release.
+    environment: release
+    permissions:
+      contents: read
+      # Lets crates-io-auth-action request a short-lived token (trusted publishing).
+      id-token: write
+    env:
+      # Only the first release needs this secret; later ones use trusted publishing.
+      HAS_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Check the tag matches the crate version and the changelog
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 \
+            | jq -r '.packages[] | select(.name == "authorizenet") | .version')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match the crate version $version"
+            exit 1
+          fi
+          if ! grep -q "^## \[$version\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no section for $version"
+            exit 1
+          fi
+
+      # xmllint validates serialized requests against the XSD (tests/fixtures.rs).
+      - run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - run: cargo xtask codegen --check
+      - run: cargo test --workspace --all-features
+
+      - name: Authenticate with crates.io (trusted publishing)
+        id: auth
+        if: env.HAS_TOKEN != 'true'
+        uses: rust-lang/crates-io-auth-action@v1
+
+      # Publishes authorizenet-derive, then authorizenet; xtask is not published.
+      - run: cargo publish --workspace
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || steps.auth.outputs.token }}
