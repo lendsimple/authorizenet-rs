@@ -7,3 +7,4 @@ edition = "2024"
 license = "MIT"
 authors = ["Michael Lavers <kolanos@gmail.com>"]
 version = "0.1.0"
+rust-version = "1.88"

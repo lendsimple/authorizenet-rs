@@ -5,6 +5,14 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
+rust-version.workspace = true
+readme = "../README.md"
+documentation = "https://docs.rs/authorizenet"
+keywords = ["authorize-net", "payments", "payment-gateway", "credit-card", "api"]
+categories = ["api-bindings", "web-programming::http-client"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [dependencies]
 authorizenet-derive = { version = "0.1.0", path = "../authorizenet-derive" }
@@ -36,3 +44,23 @@ blocking = ["dep:ureq"]
 rustls = ["reqwest?/rustls", "ureq?/rustls"]
 ## TLS with the platform's native library.
 native-tls = ["reqwest?/native-tls", "ureq?/native-tls"]
+
+[[example]]
+name = "charge_credit_card"
+required-features = ["async"]
+
+[[example]]
+name = "charge_credit_card_blocking"
+required-features = ["blocking"]
+
+[[example]]
+name = "customer_profile"
+required-features = ["async"]
+
+[[example]]
+name = "subscription"
+required-features = ["async"]
+
+[[example]]
+name = "hosted_payment_page"
+required-features = ["async"]

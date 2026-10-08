@@ -49,3 +49,8 @@ pub use credentials::{Credentials, Environment, PRODUCTION_ENDPOINT, SANDBOX_END
 pub use error::{ApiError, Error, TransportError};
 pub use rust_decimal::Decimal;
 pub use secrecy::SecretString;
+
+/// Compiles the README's examples as doc tests.
+#[cfg(all(doctest, feature = "async", feature = "blocking"))]
+#[doc = include_str!("../../README.md")]
+struct ReadmeDoctests;

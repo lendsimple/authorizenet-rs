@@ -148,6 +148,11 @@ fn declined_transaction_keeps_its_transaction_response() {
         Some("This transaction has been declined.")
     );
     assert!(err.response::<AuthenticateTestResponse>().is_none());
+    assert_eq!(err.transaction_response().map(|t| t.errors.len()), Some(1));
+    assert_eq!(
+        err.transaction_response().and_then(|t| t.outcome()),
+        Some(authorizenet::schema::TransactionOutcome::Declined)
+    );
 }
 
 #[test]

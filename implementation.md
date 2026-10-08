@@ -434,7 +434,24 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 
 **Tests**: doc tests on the examples, and the live sandbox suite.
 
-**Status**: Not Started
+**Status**: In Progress — the work is done; two checks need credentials or a GitHub remote (see Remaining).
+
+**Notes (as built)**:
+- Convenience constructors (`src/schema/ext.rs`): `CreditCard::new(..).with_code(..)`, `OpaqueData::new`, `Payment::new` and `From<CreditCard | BankAccount | OpaqueData> for Payment`, `TransactionRequest::{auth_capture, auth_only, prior_auth_capture, refund, void}`, `CreateTransactionRequest::new` / `From<TransactionRequest>`, `Messages::is_ok`, `TransactionResponse::outcome()` → `TransactionOutcome`, `PaymentSchedule::new` with `PaymentScheduleInterval::{months, days}`, and `ApiError::transaction_response()`.
+- Examples (`authorizenet/examples`): `charge_credit_card` (charge, then void), `charge_credit_card_blocking`, `customer_profile` (create, get, delete), `subscription` (create, cancel), `hosted_payment_page`. They read `ANET_LOGIN_ID`/`ANET_TRANSACTION_KEY` and target the sandbox.
+- Sandbox tests (`tests/sandbox.rs`, `#[ignore]`): isAlive, authenticateTest (both clients), charge + void, customer profile lifecycle. They panic with a clear message if the credentials are not set, rather than passing silently.
+- README with usage, features, errors, logging, development and schema-update notes. Its examples are compiled as doctests (`#[cfg(doctest)]` include in `lib.rs`).
+- MSRV 1.88: the highest `rust-version` among dependencies, and what let-chains need. Verified with `cargo +1.88 check --all-features --all-targets`.
+- CI (`.github/workflows/ci.yml`): fmt; clippy over 5 feature sets; tests on Linux, macOS and Windows over 3 feature sets, with xmllint on Linux for the XSD conformance test; MSRV; `codegen --check`; docs with `-D warnings`; cargo-deny. `.gitattributes` keeps fixtures and generated code byte-exact on Windows.
+- `deny.toml`: permissive licenses only (MIT, Apache-2.0, BSD-3-Clause, ISC, Unicode-3.0, CDLA-Permissive-2.0). `cargo deny check` passes locally.
+- `cargo publish --dry-run --workspace` packages and verifies both crates.
+
+**Remaining**:
+- Run the sandbox tests with sandbox credentials.
+- Push to GitHub and confirm the workflow passes. The workflow is valid YAML, and each of its commands passes locally on macOS; it has not run on Actions, and Linux/Windows have not been tried.
+- Add a `repository` URL to the manifests before publishing (it was left out rather than guessed).
+
+
 
 ## Verification (end-to-end)
 1. `cargo xtask codegen --check && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings`
@@ -444,7 +461,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 5. `cargo run --example charge_credit_card --features async`, then check the transaction in the sandbox merchant interface.
 
 ## Open items to resolve during implementation (not blocking)
-- Set the MSRV once the dependency versions are pinned. The proposal is edition 2024 with the MSRV being the newest version any dependency requires.
+- ~~Set the MSRV~~: 1.88 (Stage 5).
 - Settle the final list of string→enum retypings. Be conservative: only retype where the XSD or the API docs list the values.
 - Decide whether any wrapped lists must be `Option<Vec<_>>`, for update semantics where an empty wrapper and an absent one mean different things. Check against the API reference for update operations.
 - License: MIT, matching the Python client.

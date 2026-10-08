@@ -3,7 +3,9 @@
 use std::fmt;
 
 use crate::api::ApiResponse;
-use crate::schema::{AnyResponse, Message, Messages};
+use crate::schema::{
+    AnyResponse, CreateTransactionResponse, Message, Messages, TransactionResponse,
+};
 use crate::validate::ValidationError;
 use crate::xml::XmlError;
 
@@ -87,10 +89,8 @@ impl TransportError {
 ///
 /// ```no_run
 /// # fn handle(err: authorizenet::ApiError) {
-/// use authorizenet::schema::CreateTransactionResponse;
-///
-/// if let Some(response) = err.response::<CreateTransactionResponse>() {
-///     for e in &response.transaction_response.errors {
+/// if let Some(transaction) = err.transaction_response() {
+///     for e in &transaction.errors {
 ///         println!("{:?}: {:?}", e.error_code, e.error_text);
 ///     }
 /// }
@@ -134,6 +134,13 @@ impl ApiError {
     /// The response that reported the error, if it was a `T`.
     pub fn response<T: ApiResponse>(&self) -> Option<&T> {
         self.response.as_ref().and_then(T::from_any)
+    }
+
+    /// The transaction response of a failed `createTransaction`, whose `errors`
+    /// explain a decline more specifically than [`text`](Self::text).
+    pub fn transaction_response(&self) -> Option<&TransactionResponse> {
+        self.response::<CreateTransactionResponse>()
+            .map(|response| &response.transaction_response)
     }
 
     /// Takes the response that reported the error.

@@ -1,0 +1,30 @@
+# cargo-deny: https://embarkstudios.github.io/cargo-deny/
+
+[graph]
+all-features = true
+
+[advisories]
+# Fail on any vulnerability, unmaintained or unsound crate in the dependency tree.
+ignore = []
+
+[licenses]
+# Permissive licenses, all compatible with this crate's MIT license.
+allow = [
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "CDLA-Permissive-2.0", # webpki-roots (Mozilla's CA certificates)
+    "ISC",
+    "MIT",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.9
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+# Path dependencies within the workspace carry versions, so they are not wildcards.
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
