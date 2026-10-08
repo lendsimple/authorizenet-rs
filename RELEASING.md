@@ -5,10 +5,10 @@
 generate calls into `authorizenet`'s internals.
 
 Releases are published by the [Release workflow](.github/workflows/release.yml) when a
-`v*` tag is pushed. It checks that the tag matches the crate version and that
-`CHANGELOG.md` has a section for it, runs the tests, and then runs
-`cargo publish --workspace`, which publishes `authorizenet-derive` first and skips the
-unpublished `xtask`.
+GitHub Release is published (not when a tag is pushed, and not for drafts). It checks
+that the release's tag matches the crate version and that `CHANGELOG.md` has a section
+for it, runs the tests, and then runs `cargo publish --workspace`, which publishes
+`authorizenet-derive` first and skips the unpublished `xtask`.
 
 ## Each release
 
@@ -24,15 +24,25 @@ unpublished `xtask`.
    cargo publish --dry-run --workspace
    ```
 
-5. Commit, tag and push. The tag starts the release:
+5. Commit and push:
 
    ```sh
    git commit -am "Release x.y.z"
-   git tag vx.y.z
-   git push origin main vx.y.z
+   git push origin main
    ```
 
-6. If the `release` environment requires approval, approve the run in the Actions tab.
+6. Publish a GitHub Release for the tag `vx.y.z` on `main`, either on the repository's
+   Releases page or with `gh`, using the version's changelog section as the notes:
+
+   ```sh
+   awk '/^## \[x.y.z\]/{p=1; next} /^## \[|^\[.*\]: /{p=0} p' CHANGELOG.md > notes.md
+   gh release create vx.y.z --target main --title "x.y.z" --notes-file notes.md
+   ```
+
+   Publishing the release starts the workflow. A release created by another workflow
+   with the default `GITHUB_TOKEN` does not trigger it; GitHub suppresses that to
+   prevent loops.
+7. If the `release` environment requires approval, approve the run in the Actions tab.
 
 If the workflow publishes `authorizenet-derive` but then fails on `authorizenet`, fix
 the cause and publish the rest by hand (`cargo publish -p authorizenet`): re-running the
