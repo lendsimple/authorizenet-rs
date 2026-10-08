@@ -111,6 +111,25 @@ jobs:
       - run: cargo +nightly update -Z direct-minimal-versions
       - run: cargo +stable test --workspace --all-features
 
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # v1
+        with:
+          toolchain: "stable"
+          targets: wasm32-unknown-unknown, wasm32-wasip2
+          components: clippy
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          key: wasm
+      # Browsers and edge runtimes: the library on its own, and with reqwest, whose
+      # wasm backend uses the JavaScript fetch API.
+      - run: cargo clippy -p authorizenet --lib --target wasm32-unknown-unknown --no-default-features -- -D warnings
+      - run: cargo clippy -p authorizenet --lib --target wasm32-unknown-unknown --no-default-features --features reqwest -- -D warnings
+      # WASI: the library with a custom transport (reqwest does not support WASI).
+      - run: cargo clippy -p authorizenet --lib --target wasm32-wasip2 --no-default-features -- -D warnings
+
   codegen:
     runs-on: ubuntu-latest
     steps:

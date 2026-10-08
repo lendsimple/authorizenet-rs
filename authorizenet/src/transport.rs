@@ -6,6 +6,9 @@
 //! `ReqwestTransport` (with the `reqwest` feature); the [`blocking::Client`](crate::blocking::Client) uses a
 //! [`blocking::Transport`](crate::blocking::Transport), by default `UreqTransport`.
 //!
+//! The clients work on WebAssembly too: `ReqwestTransport` uses the JavaScript
+//! `fetch` API there, and on `wasm32` the trait does not require `Send`.
+//!
 //! To use another HTTP client, implement the trait:
 //!
 //! ```
@@ -62,13 +65,32 @@ impl HttpResponse {
 /// Sends requests for the async [`Client`](crate::Client).
 ///
 /// The future must be `Send`, so that client calls can be spawned on a multi-threaded
-/// runtime. Return a [`TransportError`] only when no response was received (a
-/// connection, TLS or timeout failure); an HTTP error status is a response.
+/// runtime. (On WebAssembly, where there are no threads to send it to and `fetch`
+/// futures are not `Send`, it need not be; see the crate's README.)
+///
+/// Return a [`TransportError`] only when no response was received (a connection, TLS
+/// or timeout failure); an HTTP error status is a response.
+#[cfg(not(target_arch = "wasm32"))]
 pub trait Transport: Send + Sync {
     fn send(
         &self,
         request: HttpRequest<'_>,
     ) -> impl Future<Output = Result<HttpResponse, TransportError>> + Send;
+}
+
+/// Sends requests for the async [`Client`](crate::Client).
+///
+/// On WebAssembly the future need not be `Send`: there are no threads to send it to,
+/// and JavaScript `fetch` futures are not `Send`.
+///
+/// Return a [`TransportError`] only when no response was received (a connection, TLS
+/// or timeout failure); an HTTP error status is a response.
+#[cfg(target_arch = "wasm32")]
+pub trait Transport {
+    fn send(
+        &self,
+        request: HttpRequest<'_>,
+    ) -> impl Future<Output = Result<HttpResponse, TransportError>>;
 }
 
 /// A [`Transport`] built on [reqwest](https://docs.rs/reqwest), which runs on tokio.

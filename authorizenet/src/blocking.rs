@@ -18,7 +18,17 @@ use crate::transport::{HttpRequest, HttpResponse};
 /// Return a [`TransportError`] only when no response was received (a connection, TLS
 /// or timeout failure); an HTTP error status is a response. See
 /// [`transport`](crate::transport) for the async counterpart and an example.
+#[cfg(not(target_arch = "wasm32"))]
 pub trait Transport: Send + Sync {
+    fn send(&self, request: HttpRequest<'_>) -> Result<HttpResponse, TransportError>;
+}
+
+/// Sends requests for the blocking [`Client`].
+///
+/// On WebAssembly the transport need not be `Send` or `Sync`: there are no threads to
+/// share it with, and host HTTP APIs (such as WASI's) are often single-threaded.
+#[cfg(target_arch = "wasm32")]
+pub trait Transport {
     fn send(&self, request: HttpRequest<'_>) -> Result<HttpResponse, TransportError>;
 }
 

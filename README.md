@@ -132,6 +132,24 @@ To share a reqwest client or ureq agent you already have, wrap it:
 `authorizenet::protocol` encodes requests and decodes responses on their own, if you
 want no client at all.
 
+## WebAssembly
+
+The crate builds for `wasm32-unknown-unknown`, for server-side runtimes such as
+Cloudflare Workers or Fastly Compute. With the `reqwest` feature, `ReqwestTransport`
+sends requests with the JavaScript `fetch` API (and enforces timeouts by aborting
+them). On `wasm32` the transport traits do not require `Send`, since `fetch` futures
+are not `Send` and there are no threads to send them to.
+
+Keep transaction keys out of browsers: code running in a page hands its credentials to
+everyone who opens it, and a transaction key gives full access to the merchant account.
+Authorize.Net's API does allow cross-origin requests, so the limit is security, not
+CORS.
+
+On WASI (`wasm32-wasip2`) the library builds, but neither built-in transport works
+there: reqwest does not support WASI, and ureq has no TLS backend that builds for it.
+Implement `transport::Transport` or `blocking::Transport` over the host's HTTP API
+instead.
+
 ## Examples
 
 `authorizenet/examples` has runnable examples against the sandbox: charging a card

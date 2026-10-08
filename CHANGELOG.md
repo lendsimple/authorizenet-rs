@@ -38,6 +38,8 @@ The first release.
 - `tracing` spans and events for every request, with card numbers, keys and other
   secrets redacted from logged bodies and from `Debug` output.
 - TLS through rustls (default) or the platform's library (`native-tls`).
+- WebAssembly support: the crate builds for `wasm32-unknown-unknown` and `wasm32-wasip2`,
+  and `ReqwestTransport` uses the JavaScript `fetch` API on `wasm32-unknown-unknown`.
 
 [Unreleased]: https://github.com/lendsimple/authorizenet-rs/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/lendsimple/authorizenet-rs/releases/tag/v0.1.0
