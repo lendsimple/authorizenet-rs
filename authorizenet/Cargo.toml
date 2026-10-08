@@ -4,6 +4,7 @@ description = "A typed Authorize.Net API client with async and blocking support.
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
 authors.workspace = true
 rust-version.workspace = true
 readme = "../README.md"
