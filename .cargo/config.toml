@@ -1,2 +1,8 @@
 [alias]
 xtask = "run --package xtask --"
+
+# Set for every cargo command run in this repository, but not part of any published
+# package: tests that only make sense here (such as compile-error snapshots, which
+# follow one rustc's wording) check it and skip when the crate is tested elsewhere.
+[env]
+AUTHORIZENET_UI_TESTS = "1"

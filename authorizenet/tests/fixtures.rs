@@ -150,14 +150,19 @@ fn request_fixtures_pass_validation() {
 }
 
 /// Validates the serialized requests against the vendored XSD with `xmllint`, when
-/// it is installed.
+/// both are available (in the repository, with libxml2 installed).
 #[test]
 fn serialized_requests_conform_to_xsd() {
     if Command::new("xmllint").arg("--version").output().is_err() {
         eprintln!("skipping: xmllint is not installed");
         return;
     }
+    // The vendored XSD sits in the repository, outside the published crate.
     let schema = Path::new(env!("CARGO_MANIFEST_DIR")).join("../schema/AnetApiSchema.xsd");
+    if !schema.exists() {
+        eprintln!("skipping: the XSD is only available in the repository");
+        return;
+    }
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("conformance");
     std::fs::create_dir_all(&dir).unwrap();
     let mut files = Vec::new();

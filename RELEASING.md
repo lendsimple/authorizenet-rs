@@ -21,12 +21,9 @@ for it, runs the tests, and then runs `cargo publish --workspace`, which publish
 
    ```sh
    cargo test --workspace --all-features
+   ./scripts/test-packaged-crate.sh   # the tests, run from the packaged crates
    cargo publish --dry-run --workspace
    ```
-
-   The dry run warns that it is "ignoring" each test and example: the packages hold
-   only `src/`, the README and the license (`include` in each crate's `Cargo.toml`),
-   so tests, fixtures and examples stay in the repository.
 
 5. Commit and push:
 
