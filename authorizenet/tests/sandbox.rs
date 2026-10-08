@@ -4,7 +4,7 @@
 //! ```sh
 //! ANET_LOGIN_ID=... ANET_TRANSACTION_KEY=... cargo test --all-features --test sandbox -- --ignored
 //! ```
-#![cfg(all(feature = "async", feature = "blocking"))]
+#![cfg(all(feature = "reqwest", feature = "ureq"))]
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -28,7 +28,7 @@ fn credentials() -> Credentials {
 }
 
 fn client() -> Client {
-    Client::new(credentials()).unwrap()
+    Client::new(credentials())
 }
 
 /// Differs between runs, so the sandbox does not reject a charge as a duplicate.
@@ -67,7 +67,7 @@ async fn credentials_authenticate() {
 #[test]
 #[ignore = "needs sandbox credentials"]
 fn blocking_client_authenticates() {
-    let client = authorizenet::blocking::Client::new(credentials()).unwrap();
+    let client = authorizenet::blocking::Client::new(credentials());
     let response = client
         .misc()
         .test_authenticate(&AuthenticateTestRequest::default())

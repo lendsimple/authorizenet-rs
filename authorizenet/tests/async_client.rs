@@ -1,5 +1,5 @@
 //! The async client against a mock API: the Python client's async tests, ported.
-#![cfg(feature = "async")]
+#![cfg(feature = "reqwest")]
 
 #[macro_use]
 mod common;
@@ -14,7 +14,6 @@ fn client(api: &MockApi, credentials: Credentials) -> Client {
     Client::builder(credentials)
         .environment(api.environment())
         .build()
-        .unwrap()
 }
 
 macro_rules! async_cases {
@@ -75,7 +74,7 @@ async fn subscriptions_get_status_reports_missing_subscription() {
 #[test]
 fn futures_are_send() {
     fn assert_send<T: Send>(_: &T) {}
-    let client = Client::new(credentials()).unwrap();
+    let client = Client::new(credentials());
     let request: CreateTransactionRequest =
         common::request_fixture("authorize_credit_card_request.xml");
     assert_send(&client.transactions().create(&request));
@@ -126,8 +125,7 @@ async fn connection_failure_is_a_transport_error() {
         .environment(authorizenet::Environment::Custom(format!(
             "http://127.0.0.1:{port}/"
         )))
-        .build()
-        .unwrap();
+        .build();
     let result = client
         .misc()
         .test_authenticate(&AuthenticateTestRequest::default())
@@ -149,8 +147,7 @@ async fn slow_response_times_out() {
     let client = Client::builder(credentials())
         .environment(api.environment())
         .timeout(Duration::from_millis(200))
-        .build()
-        .unwrap();
+        .build();
     let result = client
         .misc()
         .test_authenticate(&AuthenticateTestRequest::default())

@@ -27,8 +27,8 @@ jobs:
         features:
           - ""
           - --no-default-features
-          - --no-default-features --features blocking,rustls
-          - --no-default-features --features async,native-tls
+          - --no-default-features --features ureq,rustls
+          - --no-default-features --features reqwest,native-tls
           - --all-features
     steps:
       - uses: actions/checkout@v5
@@ -47,7 +47,7 @@ jobs:
         features:
           - --all-features
           - --no-default-features
-          - --no-default-features --features blocking,rustls
+          - --no-default-features --features ureq,rustls
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable

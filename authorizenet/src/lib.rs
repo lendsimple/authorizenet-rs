@@ -5,14 +5,17 @@
 //! [`schema`]), and every operation is a method on a resource of the client:
 //! `client.transactions().create(&request)`.
 //!
-//! # Features
+//! # Clients and transports
 //!
-//! - `async` (default): [`Client`], built on reqwest, for tokio.
-//! - `blocking`: [`blocking::Client`], built on ureq, with no async runtime.
-//! - `rustls` (default) or `native-tls`: the TLS implementation.
+//! [`Client`] is async and [`blocking::Client`] blocks. Both send requests through a
+//! transport, which you can replace to use any HTTP client (see [`transport`]). The
+//! features provide the default transports:
 //!
-//! Without a client feature, [`protocol`] still encodes requests and decodes
-//! responses for use with any HTTP client.
+//! - `reqwest` (default): `transport::ReqwestTransport` for [`Client`], on tokio.
+//! - `ureq`: `blocking::UreqTransport` for [`blocking::Client`], with no async runtime.
+//! - `rustls` (default) or `native-tls`: their TLS implementation.
+//!
+//! [`protocol`] also encodes requests and decodes responses on their own.
 //!
 //! # Logging
 //!
@@ -25,25 +28,21 @@
 extern crate self as authorizenet;
 
 pub mod api;
-#[cfg(feature = "blocking")]
 pub mod blocking;
-#[cfg(feature = "async")]
 mod client;
-#[cfg(any(feature = "async", feature = "blocking"))]
 mod config;
 mod credentials;
 mod error;
 mod operations;
 pub mod protocol;
 pub mod schema;
+pub mod transport;
 pub mod types;
 pub mod validate;
 pub mod xml;
 
 pub use api::{ApiRequest, ApiResponse};
-#[cfg(feature = "async")]
 pub use client::{Client, ClientBuilder};
-#[cfg(any(feature = "async", feature = "blocking"))]
 pub use config::{DEFAULT_TIMEOUT, DEFAULT_USER_AGENT};
 pub use credentials::{Credentials, Environment, PRODUCTION_ENDPOINT, SANDBOX_ENDPOINT};
 pub use error::{ApiError, Error, TransportError};
@@ -51,6 +50,6 @@ pub use rust_decimal::Decimal;
 pub use secrecy::SecretString;
 
 /// Compiles the README's examples as doc tests.
-#[cfg(all(doctest, feature = "async", feature = "blocking"))]
+#[cfg(all(doctest, feature = "reqwest", feature = "ureq"))]
 #[doc = include_str!("../../README.md")]
 struct ReadmeDoctests;

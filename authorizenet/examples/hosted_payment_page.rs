@@ -17,7 +17,7 @@ async fn main() -> Result<(), Error> {
     let client = Client::new(Credentials::transaction_key(
         var("ANET_LOGIN_ID"),
         var("ANET_TRANSACTION_KEY"),
-    ))?;
+    ));
 
     let transaction = TransactionRequest::builder()
         .transaction_type(TransactionType::AuthCaptureTransaction)

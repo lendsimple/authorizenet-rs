@@ -1,5 +1,5 @@
 //! The blocking client against a mock API: the Python client's sync tests, ported.
-#![cfg(feature = "blocking")]
+#![cfg(feature = "ureq")]
 
 #[macro_use]
 mod common;
@@ -15,7 +15,6 @@ fn client(api: &MockApi, credentials: Credentials) -> Client {
     Client::builder(credentials)
         .environment(api.environment())
         .build()
-        .unwrap()
 }
 
 macro_rules! blocking_cases {
@@ -94,8 +93,7 @@ fn connection_failure_is_a_transport_error() {
         .environment(authorizenet::Environment::Custom(format!(
             "http://127.0.0.1:{port}/"
         )))
-        .build()
-        .unwrap();
+        .build();
     let result = client
         .misc()
         .test_authenticate(&AuthenticateTestRequest::default());
@@ -115,8 +113,7 @@ fn slow_response_times_out() {
     let client = Client::builder(credentials())
         .environment(api.environment())
         .timeout(Duration::from_millis(200))
-        .build()
-        .unwrap();
+        .build();
     let result = client
         .misc()
         .test_authenticate(&AuthenticateTestRequest::default());
@@ -148,8 +145,7 @@ fn validation_can_be_turned_off() {
     let client = Client::builder(credentials())
         .environment(api.environment())
         .validate_requests(false)
-        .build()
-        .unwrap();
+        .build();
     client.misc().test_authenticate(&too_long_ref_id()).unwrap();
     assert!(api.received().is_some());
 }

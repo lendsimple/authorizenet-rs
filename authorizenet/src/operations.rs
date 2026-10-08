@@ -164,7 +164,6 @@ macro_rules! operation_table {
     };
 }
 
-#[cfg(any(feature = "async", feature = "blocking"))]
 pub(crate) use operation_table;
 
 /// Implements `ApiRequest` for each request in the table.
@@ -190,12 +189,11 @@ operation_table!(impl_api_requests);
 
 /// A client's resource handles and its methods returning them, one per group.
 ///
-/// Arguments: `[Client, async]` or `[Client, blocking]`. `Client` must have an
-/// `execute` method, async or not.
-#[cfg(any(feature = "async", feature = "blocking"))]
+/// Arguments: `[Client, Transport, async]` or `[Client, Transport, blocking]`, where
+/// `Client<T>` has an `execute` method for any `T: Transport`.
 macro_rules! resource_handles {
     (
-        [$client:ident, $mode:ident]
+        [$client:ident, $transport:path, $mode:ident]
         $(
             $group:ident => $handle:ident {
                 $(
@@ -205,10 +203,10 @@ macro_rules! resource_handles {
             }
         )*
     ) => {
-        impl $client {
+        impl<T: $transport> $client<T> {
             $(
                 #[doc = concat!("The `", stringify!($group), "` operations.")]
-                pub fn $group(&self) -> $handle<'_> {
+                pub fn $group(&self) -> $handle<'_, T> {
                     $handle { client: self }
                 }
             )*
@@ -219,12 +217,25 @@ macro_rules! resource_handles {
                 "The `", stringify!($group), "` operations, from [`", stringify!($client),
                 "::", stringify!($group), "`]."
             )]
-            #[derive(Debug, Clone, Copy)]
-            pub struct $handle<'a> {
-                client: &'a $client,
+            pub struct $handle<'a, T> {
+                client: &'a $client<T>,
             }
 
-            impl $handle<'_> {
+            impl<T> Clone for $handle<'_, T> {
+                fn clone(&self) -> Self {
+                    *self
+                }
+            }
+
+            impl<T> Copy for $handle<'_, T> {}
+
+            impl<T> ::core::fmt::Debug for $handle<'_, T> {
+                fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                    f.debug_struct(stringify!($handle)).finish_non_exhaustive()
+                }
+            }
+
+            impl<T: $transport> $handle<'_, T> {
                 $(
                     resource_handles!(@method $mode $method $request $response $(#[$doc])*);
                 )*
@@ -265,5 +276,4 @@ macro_rules! resource_handles {
     };
 }
 
-#[cfg(any(feature = "async", feature = "blocking"))]
 pub(crate) use resource_handles;

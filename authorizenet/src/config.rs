@@ -8,6 +8,7 @@ use crate::credentials::{Credentials, Environment};
 use crate::error::Error;
 use crate::protocol;
 use crate::schema::SENSITIVE_ELEMENTS;
+use crate::transport::HttpRequest;
 
 /// How long a request may take, including reading the response, unless set otherwise.
 pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(60);
@@ -48,6 +49,17 @@ impl Config {
             tracing::trace!(body = %redact(&body), "request body");
         }
         Ok(body)
+    }
+
+    /// The HTTP request carrying `body`.
+    pub fn http_request(&self, body: String) -> HttpRequest<'_> {
+        HttpRequest {
+            url: &self.endpoint,
+            body,
+            content_type: protocol::CONTENT_TYPE,
+            user_agent: &self.user_agent,
+            timeout: self.timeout,
+        }
     }
 
     pub fn decode<R: ApiRequest>(&self, status: u16, body: &[u8]) -> Result<R::Response, Error> {

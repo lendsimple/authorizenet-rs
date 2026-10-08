@@ -16,7 +16,7 @@ async fn main() -> Result<(), Error> {
     let client = Client::new(Credentials::transaction_key(
         var("ANET_LOGIN_ID"),
         var("ANET_TRANSACTION_KEY"),
-    ))?;
+    ));
 
     let start = time::OffsetDateTime::now_utc().date() + time::Duration::days(1);
     let subscription = ArbSubscription::builder()

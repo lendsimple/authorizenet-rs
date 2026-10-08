@@ -55,7 +55,7 @@ impl From<ApiError> for Error {
     }
 }
 
-/// A failure of the HTTP client underneath.
+/// A failure of the HTTP transport underneath a client.
 #[derive(Debug, thiserror::Error)]
 #[error("{source}")]
 pub struct TransportError {
@@ -64,14 +64,19 @@ pub struct TransportError {
 }
 
 impl TransportError {
-    #[cfg(any(feature = "async", feature = "blocking"))]
-    pub(crate) fn new(
-        source: impl Into<Box<dyn std::error::Error + Send + Sync>>,
-        timeout: bool,
-    ) -> Self {
+    /// A failure to send a request or receive its response.
+    pub fn new(source: impl Into<Box<dyn std::error::Error + Send + Sync>>) -> Self {
         Self {
             source: source.into(),
-            timeout,
+            timeout: false,
+        }
+    }
+
+    /// A request that timed out.
+    pub fn timeout(source: impl Into<Box<dyn std::error::Error + Send + Sync>>) -> Self {
+        Self {
+            source: source.into(),
+            timeout: true,
         }
     }
 

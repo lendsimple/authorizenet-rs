@@ -14,7 +14,7 @@ The Python client at `~/Web/python-authorizenet` is a **reference, not a source 
 |---|---|
 | Schema source | `cargo xtask codegen` reads a **vendored copy of the live `AnetApiSchema.xsd`** plus `overrides.toml`. It writes readable Rust, and that output is committed. |
 | XML engine | **Our own derive proc-macro** on top of `quick-xml`'s streaming `Reader`/`Writer`. Not serde. |
-| Sync/async | A **sans-IO core**, plus `Client` (async, `reqwest`) and `blocking::Client` (`ureq`). Each client is behind an additive cargo feature. |
+| Sync/async | A **sans-IO core**, plus `Client` (async, `reqwest`) and `blocking::Client` (`ureq`). Each client is behind an additive cargo feature. *Revised in Stage 6:* both clients are generic over a transport trait, and the features (`reqwest`, `ureq`) only provide the default transports. |
 | API version | The **current live XSD**, which has moved ahead of `schema.py` (see Schema drift). |
 
 ## What we learned from the Python client (things to keep)
@@ -450,6 +450,36 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 - ~~Run the sandbox tests~~: all 5 pass (2026-10-08), with the Python suite's sandbox credentials from `tests/constants.py`. All 5 examples also run successfully against the sandbox with them.
 - Push to GitHub and confirm the workflow passes. The workflow is valid YAML, and each of its commands passes locally on macOS; it has not run on Actions, and Linux/Windows have not been tried.
 - Add a `repository` URL to the manifests before publishing (it was left out rather than guessed).
+
+
+
+## Stage 6: Pluggable transports
+**Goal**: The clients send requests through a transport trait instead of being tied to reqwest and ureq, so any HTTP client (hyper, awc, a non-tokio runtime, a test double) gets the full typed API.
+- `transport::Transport` (async; its futures are `Send`) and `blocking::Transport` take an `HttpRequest` (URL, body, content type, user agent, timeout) and return an `HttpResponse` (status, body) or a `TransportError`, which gets public constructors.
+- `Client<T = ReqwestTransport>` and `blocking::Client<T = UreqTransport>`: code that does not name `T` is unchanged. `ClientBuilder::new(credentials, transport)` and `Client::with_transport` take any transport. `Client::new`/`builder` stay for the default transports.
+- The clients no longer need a cargo feature. The features only provide the built-in transports, renamed `async` → `reqwest` and `blocking` → `ureq`.
+- `ClientBuilder::http_client` and `agent` are replaced by `ReqwestTransport::from(reqwest::Client)` and `UreqTransport::from(ureq::Agent)`, so builder signatures name no third-party types.
+- `Client::new` and `build()` become infallible; the default transports behave like `reqwest::Client::new()` and `ureq::Agent::new_with_defaults()`.
+
+**Success Criteria**:
+- Without `reqwest` or `ureq`, both clients compile and work with a custom transport, and `cargo tree` shows no tokio.
+- Every existing client, mock-server and sandbox test passes unchanged in behaviour.
+- clippy, docs and cargo-deny are clean across the feature matrix.
+
+**Tests**:
+- A custom in-memory transport, for both traits, serves a fixture without any HTTP. It checks the request the client hands over (URL, content type, user agent, timeout, body) and works without any feature enabled.
+- A transport error from a custom transport reaches the caller as `Error::Transport`, keeping `is_timeout()`.
+- The async client's futures are `Send` with a custom transport.
+- The existing suites, renamed to the new features.
+
+**Status**: Complete
+
+**Notes (as built)**:
+- `src/transport.rs`: `HttpRequest`, `HttpResponse`, the async `Transport` (its `send` returns `impl Future + Send`, so implementations can write `async fn`), and `ReqwestTransport`. `src/blocking.rs`: `blocking::Transport` and `UreqTransport`. `TransportError::new`/`timeout` are public.
+- The resource handles are generic too (`Transactions<'_, T>`), with hand-written `Clone`/`Copy`/`Debug` so they don't require `T: Copy`.
+- `Client` and `ClientBuilder` have a default type parameter only when their default transport's feature is on. Without it they are plain `Client<T>`, and docs never link to feature-gated items.
+- Without `reqwest` or `ureq`, `cargo tree` shows no tokio, hyper, reqwest or ureq. `tests/custom_transport.rs` (8 tests) runs there, driving the async client with a ten-line std-only executor.
+- Re-verified with the change: test matrix (255 tests with all features, 124 with none), clippy over 5 feature sets, docs over 3, cargo-deny, MSRV 1.88, `cargo publish --dry-run`, and all 5 sandbox tests and 5 examples against the live sandbox.
 
 
 

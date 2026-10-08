@@ -1,6 +1,6 @@
 //! What the clients log. A separate test binary, because these tests install a global
 //! `tracing` subscriber.
-#![cfg(any(feature = "async", feature = "blocking"))]
+#![cfg(any(feature = "reqwest", feature = "ureq"))]
 
 #[macro_use]
 mod common;
@@ -29,29 +29,27 @@ fn assert_redacted(logs: &str) {
     }
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "ureq")]
 #[test]
 fn blocking_client_logs_redact_secrets() {
     let logs = logs();
     let api = MockApi::new(200, fixture("authorize_credit_card_response.xml"));
     let client = authorizenet::blocking::Client::builder(credentials())
         .environment(api.environment())
-        .build()
-        .unwrap();
+        .build();
     let request = common::request_fixture("authorize_credit_card_request.xml");
     client.transactions().create(&request).unwrap();
     assert_redacted(&logs.contents());
 }
 
-#[cfg(feature = "async")]
+#[cfg(feature = "reqwest")]
 #[tokio::test]
 async fn async_client_logs_redact_secrets() {
     let logs = logs();
     let api = MockApi::new_async(200, fixture("authorize_credit_card_response.xml")).await;
     let client = authorizenet::Client::builder(credentials())
         .environment(api.environment())
-        .build()
-        .unwrap();
+        .build();
     let request = common::request_fixture("authorize_credit_card_request.xml");
     client.transactions().create(&request).await.unwrap();
     assert_redacted(&logs.contents());

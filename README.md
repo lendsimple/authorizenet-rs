@@ -17,10 +17,13 @@ authorizenet = "0.1"
 
 | Feature | Default | |
 |---|---|---|
-| `async` | yes | `Client`, built on reqwest, for tokio |
-| `blocking` | | `blocking::Client`, built on ureq, with no async runtime |
+| `reqwest` | yes | `ReqwestTransport`: the async `Client` sends with reqwest, on tokio |
+| `ureq` | | `UreqTransport`: the `blocking::Client` sends with ureq, with no async runtime |
 | `rustls` | yes | TLS with rustls |
 | `native-tls` | | TLS with the platform's library |
+
+The clients themselves need no feature: you can give them any HTTP client (see
+[Other HTTP clients](#other-http-clients)).
 
 The minimum supported Rust version is 1.88.
 
@@ -34,7 +37,7 @@ use authorizenet::{Client, Credentials, Decimal, Environment};
 async fn main() -> Result<(), authorizenet::Error> {
     let client = Client::builder(Credentials::transaction_key("API login id", "transaction key"))
         .environment(Environment::Sandbox)
-        .build()?;
+        .build();
 
     let card = CreditCard::new("4111111111111111", "2035-12").with_code("123");
     let charge = TransactionRequest::auth_capture(Decimal::new(1999, 2), card);
@@ -58,13 +61,14 @@ use authorizenet::Credentials;
 use authorizenet::blocking::Client;
 use authorizenet::schema::AuthenticateTestRequest;
 
-let client = Client::new(Credentials::transaction_key("API login id", "transaction key"))?;
+let client = Client::new(Credentials::transaction_key("API login id", "transaction key"));
 client.misc().test_authenticate(&AuthenticateTestRequest::default())?;
 # Ok::<(), authorizenet::Error>(())
 ```
 
-The async client runs on tokio; it is cheap to clone and its futures can be spawned.
-Do not call the blocking client from async code, since it blocks the thread.
+With its default transport the async client runs on tokio; it is cheap to clone and
+its futures can be spawned. Do not call the blocking client from async code, since it
+blocks the thread.
 
 ## Errors
 
@@ -99,10 +103,34 @@ The clients use [`tracing`](https://docs.rs/tracing). Each request runs in an
 `authorizenet` span with its operation name. Request and response bodies are logged
 at `TRACE` level, with secrets replaced by `[REDACTED]`.
 
-## Without a client
+## Other HTTP clients
 
-With `default-features = false`, `authorizenet::protocol` encodes requests and decodes
-responses without doing any I/O, so you can send them with any HTTP client.
+Both clients send requests through a transport: implement `transport::Transport`
+(async) or `blocking::Transport` for your HTTP client and pass it in. You keep every
+typed operation, validation and logging; the transport only posts a body and returns
+the status and body.
+
+```rust,no_run
+use authorizenet::transport::{HttpRequest, HttpResponse, Transport};
+use authorizenet::{Client, Credentials, TransportError};
+
+struct MyTransport; // wrapping hyper, awc, a smol-based client, ...
+
+impl Transport for MyTransport {
+    async fn send(&self, request: HttpRequest<'_>) -> Result<HttpResponse, TransportError> {
+        // POST request.body to request.url with the content type, user agent and timeout.
+        # let _ = request;
+        # Ok(HttpResponse::new(200, Vec::new()))
+    }
+}
+
+let client = Client::with_transport(Credentials::transaction_key("id", "key"), MyTransport);
+```
+
+To share a reqwest client or ureq agent you already have, wrap it:
+`ReqwestTransport::from(reqwest_client)`, `UreqTransport::from(agent)`. And
+`authorizenet::protocol` encodes requests and decodes responses on their own, if you
+want no client at all.
 
 ## Examples
 

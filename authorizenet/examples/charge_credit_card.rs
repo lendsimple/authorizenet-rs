@@ -9,7 +9,7 @@ use authorizenet::{Client, Credentials, Decimal, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let client = Client::new(credentials_from_env())?;
+    let client = Client::new(credentials_from_env());
 
     let card = CreditCard::new("4111111111111111", "2035-12").with_code("123");
     // The sandbox rejects a repeat of the same charge within two minutes.

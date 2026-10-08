@@ -2,7 +2,7 @@
 //!
 //! ```sh
 //! ANET_LOGIN_ID=... ANET_TRANSACTION_KEY=... \
-//!     cargo run --example charge_credit_card_blocking --features blocking
+//!     cargo run --example charge_credit_card_blocking --features ureq
 //! ```
 
 use authorizenet::blocking::Client;
@@ -14,7 +14,7 @@ fn main() -> Result<(), Error> {
     let client = Client::new(Credentials::transaction_key(
         var("ANET_LOGIN_ID"),
         var("ANET_TRANSACTION_KEY"),
-    ))?;
+    ));
 
     let card = CreditCard::new("4111111111111111", "2035-12").with_code("123");
     let nanos = std::time::SystemTime::now()
