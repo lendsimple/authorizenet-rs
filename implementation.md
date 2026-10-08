@@ -450,6 +450,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 - ~~Run the sandbox tests~~: all 5 pass (2026-10-08), with the Python suite's sandbox credentials from `tests/constants.py`. All 5 examples also run successfully against the sandbox with them.
 - Push to GitHub and confirm the workflow passes. The workflow is valid YAML, and each of its commands passes locally on macOS; it has not run on Actions, and Linux/Windows have not been tried.
 - ~~Add a `repository` URL~~: <https://github.com/lendsimple/authorizenet-rs>.
+- ~~Publishing prep~~: `CHANGELOG.md`, `RELEASING.md`, the MIT `LICENSE` in each crate, a README for `authorizenet-derive`, an exact `=0.1.0` pin on the derive crate, docs.rs feature labels, and CI jobs for `cargo publish --dry-run` and a docs.rs-style build.
 
 
 

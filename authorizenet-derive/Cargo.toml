@@ -7,6 +7,7 @@ license.workspace = true
 repository.workspace = true
 authors.workspace = true
 rust-version.workspace = true
+readme = "README.md"
 documentation = "https://docs.rs/authorizenet-derive"
 keywords = ["authorize-net", "xml", "derive"]
 categories = ["development-tools::procedural-macro-helpers"]

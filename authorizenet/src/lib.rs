@@ -24,6 +24,9 @@
 //! response bodies are logged at `TRACE` level with card numbers, keys and other
 //! secrets redacted.
 
+// docs.rs builds with `--cfg docsrs` and labels items that need a feature.
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 // Lets derived code refer to `::authorizenet::...` inside this crate too.
 extern crate self as authorizenet;
 
@@ -51,5 +54,5 @@ pub use secrecy::SecretString;
 
 /// Compiles the README's examples as doc tests.
 #[cfg(all(doctest, feature = "reqwest", feature = "ureq"))]
-#[doc = include_str!("../../README.md")]
+#[doc = include_str!("../README.md")]
 struct ReadmeDoctests;

@@ -7,16 +7,18 @@ license.workspace = true
 repository.workspace = true
 authors.workspace = true
 rust-version.workspace = true
-readme = "../README.md"
+readme = "README.md"
 documentation = "https://docs.rs/authorizenet"
 keywords = ["authorize-net", "payments", "payment-gateway", "credit-card", "api"]
 categories = ["api-bindings", "web-programming::http-client"]
 
 [package.metadata.docs.rs]
 all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
-authorizenet-derive = { version = "0.1.0", path = "../authorizenet-derive" }
+# Pinned exactly: the derives generate calls into this crate's hidden internals.
+authorizenet-derive = { version = "=0.1.0", path = "../authorizenet-derive" }
 bon = "3.10.2"
 quick-xml = "0.42.0"
 reqwest = { version = "0.13.5", default-features = false, optional = true }

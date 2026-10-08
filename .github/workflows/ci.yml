@@ -83,6 +83,25 @@ jobs:
         env:
           RUSTDOCFLAGS: -D warnings
 
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo publish --dry-run --workspace
+
+  docs-rs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      # As docs.rs builds the docs: all features, nightly, `--cfg docsrs`.
+      - run: cargo doc -p authorizenet --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: --cfg docsrs -D warnings
+
   deny:
     runs-on: ubuntu-latest
     steps:
