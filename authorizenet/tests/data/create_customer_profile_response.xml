@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerProfileResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <customerProfileId>527259</customerProfileId>
+  <customerPaymentProfileIdList>
+    <numericString>82</numericString>
+  </customerPaymentProfileIdList>
+  <customerShippingAddressIdList/>
+  <validationDirectResponseList>
+    <string>1,1,1,This transaction has been approved.,A7HL5L,Y,10579,none,Test transaction for ValidateCustomerPaymentProfile.,0.00,CC,auth_only,21,aasoos,df,,123 Main St.,Bellevue,WA,98004,US,123-123-1235,,AsdfsfsdfBC2@here.com,,,,,,,,,0.00,0.00,0.00,FALSE,none,BE83CCB66CA83A6BDD4C826CAC6E0DA1,P,2,,,,,,,,,,,XXXX9990,Visa,,,,,,,04XSJQIKBI4MTO8S9ZQUJ74,,,,,,,,,,</string>
+  </validationDirectResponseList>
+</createCustomerProfileResponse>

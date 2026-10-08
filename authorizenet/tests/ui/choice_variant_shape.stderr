@@ -1,0 +1,5 @@
+error: choice variants must have exactly one unnamed field, e.g. `CreditCard(CreditCard)`
+ --> tests/ui/choice_variant_shape.rs:6:5
+  |
+6 |     Pair(String, String),
+  |     ^^^^^^^^^^^^^^^^^^^^

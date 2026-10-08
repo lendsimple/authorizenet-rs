@@ -1,0 +1,6 @@
+error: only one variant may be marked `other`
+ --> tests/ui/enum_two_others.rs:7:5
+  |
+7 | /     #[anet(other)]
+8 | |     Second(String),
+  | |__________________^

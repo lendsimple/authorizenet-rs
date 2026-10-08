@@ -1,0 +1,19 @@
+[package]
+name = "authorizenet"
+description = "A typed Authorize.Net API client with async and blocking support."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+authorizenet-derive = { version = "0.1.0", path = "../authorizenet-derive" }
+bon = "3.10.2"
+quick-xml = "0.42.0"
+rust_decimal = "1.43.0"
+thiserror = "2.0.21"
+time = { version = "0.3.55", features = ["parsing", "formatting", "macros"] }
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"
+trybuild = "1.0.122"

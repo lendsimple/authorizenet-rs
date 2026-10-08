@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerPaymentProfileResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <customerProfileId>527245</customerProfileId>
+  <customerPaymentProfileId>83</customerPaymentProfileId>
+  <validationDirectResponse>1,1,1,This transaction has been approved.,A2I342,Y,10580,none,Test transaction for ValidateCustomerPaymentProfile.,0.00,CC,auth_only,none,CP CPP12,Cp CPP12,,123 Main St.,Bellevue,WA,98004,US,000-000-0000,,email@example.com,,,,,,,,,0.00,0.00,0.00,FALSE,none,F2173D0DD82A3F5ACA2E9D2EB1678AA4,P,2,,,,,,,,,,,XXXX1111,Visa,,,,,,,0YVN3YY26KX0SNFWSK9EB6L,,,,,,,,,,</validationDirectResponse>
+</createCustomerPaymentProfileResponse>

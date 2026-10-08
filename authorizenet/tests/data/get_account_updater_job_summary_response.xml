@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getAUJobSummaryResponse xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <refId>123456</refId>
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <auSummary>
+    <auResponse>
+      <auReasonCode>ACL</auReasonCode>
+      <profileCount>11</profileCount>
+      <reasonDescription>AccountClosed</reasonDescription>
+    </auResponse>
+    <auResponse>
+      <auReasonCode>NAN</auReasonCode>
+      <profileCount>17</profileCount>
+      <reasonDescription>NewAccountNumber</reasonDescription>
+    </auResponse>
+    <auResponse>
+      <auReasonCode>NED</auReasonCode>
+      <profileCount>23</profileCount>
+      <reasonDescription>NewExpirationDate</reasonDescription>
+    </auResponse>
+  </auSummary>
+</getAUJobSummaryResponse>

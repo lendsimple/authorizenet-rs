@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getBatchStatisticsResponse
+    xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+    <messages>
+        <resultCode>Ok</resultCode>
+        <message>
+            <code>I00001</code>
+            <text>Successful.</text>
+        </message>
+    </messages>
+    <batch>
+        <batchId>10198093</batchId>
+        <settlementTimeUTC>2014-10-24T18:59:12Z</settlementTimeUTC>
+        <settlementTimeLocal>2014-10-24T16:29:12</settlementTimeLocal>
+        <settlementState>settledSuccessfully</settlementState>
+        <paymentMethod>eCheck</paymentMethod>
+        <statistics>
+            <statistic>
+                <accountType>eCheck</accountType>
+                <chargeAmount>12.22</chargeAmount>
+                <chargeCount>1</chargeCount>
+                <refundAmount>0</refundAmount>
+                <refundCount>0</refundCount>
+                <voidCount>0</voidCount>
+                <declineCount>0</declineCount>
+                <errorCount>0</errorCount>
+                <returnedItemAmount>0</returnedItemAmount>
+                <returnedItemCount>0</returnedItemCount>
+                <chargebackAmount>0</chargebackAmount>
+                <chargebackCount>0</chargebackCount>
+                <correctionNoticeCount>0</correctionNoticeCount>
+                <chargeChargeBackAmount>0</chargeChargeBackAmount>
+                <chargeChargeBackCount>0</chargeChargeBackCount>
+                <refundChargeBackAmount>0</refundChargeBackAmount>
+                <refundChargeBackCount>0</refundChargeBackCount>
+                <chargeReturnedItemsAmount>12.21</chargeReturnedItemsAmount>
+                <chargeReturnedItemsCount>1</chargeReturnedItemsCount>
+                <refundReturnedItemsAmount>0</refundReturnedItemsAmount>
+                <refundReturnedItemsCount>0</refundReturnedItemsCount>
+            </statistic>
+        </statistics>
+    </batch>
+</getBatchStatisticsResponse>

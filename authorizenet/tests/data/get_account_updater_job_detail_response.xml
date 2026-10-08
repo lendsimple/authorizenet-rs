@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getAUJobDetailsResponse xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <refId>123456</refId>
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <totalNumInResultSet>4</totalNumInResultSet>
+  <auDetails>
+    <auDelete>
+      <customerProfileID>2</customerProfileID>
+      <customerPaymentProfileID>2</customerPaymentProfileID>
+      <firstName />
+      <lastName />
+      <updateTimeUTC>6/28/2017 1:31:01 PM</updateTimeUTC>
+      <auReasonCode>ACL</auReasonCode>
+      <reasonDescription>AccountClosed</reasonDescription>
+      <creditCard>
+        <cardNumber>XXXX1111</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </creditCard>
+    </auDelete>
+    <auUpdate>
+      <customerProfileID>88</customerProfileID>
+      <customerPaymentProfileID>117</customerPaymentProfileID>
+      <firstName />
+      <lastName>Last name to bill_123</lastName>
+      <updateTimeUTC>6/27/2017 9:24:47 AM</updateTimeUTC>
+      <auReasonCode>NED</auReasonCode>
+      <reasonDescription>NewExpirationDate</reasonDescription>
+      <newCreditCard>
+        <cardNumber>XXXX2222</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </newCreditCard>
+      <oldCreditCard>
+        <cardNumber>XXXX1111</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </oldCreditCard>
+    </auUpdate>
+    <auUpdate>
+      <customerProfileID>89</customerProfileID>
+      <customerPaymentProfileID>118</customerPaymentProfileID>
+      <firstName>First name to bill_123</firstName>
+      <lastName>Last name to bill_123</lastName>
+      <updateTimeUTC>6/27/2017 9:25:09 AM</updateTimeUTC>
+      <auReasonCode>NED</auReasonCode>
+      <reasonDescription>NewExpirationDate</reasonDescription>
+      <newCreditCard>
+        <cardNumber>XXXX1212</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </newCreditCard>
+      <oldCreditCard>
+        <cardNumber>XXXX1111</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </oldCreditCard>
+    </auUpdate>
+    <auUpdate>
+    <customerProfileID>90</customerProfileID>
+    <customerPaymentProfileID>119</customerPaymentProfileID>
+    <firstName>First name to bill_123</firstName>
+    <lastName>Last name to bill_123</lastName>
+    <updateTimeUTC>6/27/2017 9:40:35 AM</updateTimeUTC>
+    <auReasonCode>NAN</auReasonCode>
+    <reasonDescription>NewAccountNumber</reasonDescription>
+    <newCreditCard>
+      <cardNumber>XXXX3333</cardNumber>
+      <expirationDate>XXXX</expirationDate>
+    </newCreditCard>
+    <oldCreditCard>
+      <cardNumber>XXXX1111</cardNumber>
+      <expirationDate>XXXX</expirationDate>
+    </oldCreditCard>
+    </auUpdate>
+  </auDetails>
+</getAUJobDetailsResponse>

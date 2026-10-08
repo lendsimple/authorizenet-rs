@@ -1,0 +1,5 @@
+error: `item` is only valid together with `wrapper`
+ --> tests/ui/item_without_wrapper.rs:5:12
+  |
+5 |     #[anet(item = "x")]
+  |            ^^^^

@@ -1,0 +1,5 @@
+error: `attribute` and `wrapper` cannot be combined
+ --> tests/ui/conflicting_kinds.rs:5:23
+  |
+5 |     #[anet(attribute, wrapper, item = "x")]
+  |                       ^^^^^^^

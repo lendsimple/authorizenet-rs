@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerShippingAddressRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <customerProfileId>10000</customerProfileId>
+  <address>
+    <firstName>Newfirstname</firstName>
+    <lastName>Doe</lastName>
+    <company></company>
+    <address>123 Main St.</address>
+    <city>Bellevue</city>
+    <state>WA</state>
+    <zip>98004</zip>
+    <country>US</country>
+    <phoneNumber>000-000-0000</phoneNumber>
+    <faxNumber></faxNumber>
+    <customerAddressId>30000</customerAddressId>
+  </address>
+  <defaultShippingAddress>false</defaultShippingAddress>
+</updateCustomerShippingAddressRequest>

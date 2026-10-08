@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <profile>
+    <merchantCustomerId>custId123</merchantCustomerId>
+    <description>some description</description>
+    <email>newaddress@example.com</email>
+    <customerProfileId>10000</customerProfileId>
+  </profile>
+</updateCustomerProfileRequest>

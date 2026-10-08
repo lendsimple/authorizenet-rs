@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<createTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+    <merchantAuthentication>
+        <name>API_TRANSACTION_KEY</name>
+        <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+    </merchantAuthentication>
+    <refId>123456</refId>
+    <transactionRequest>
+        <transactionType>authCaptureTransaction</transactionType>
+        <amount>54</amount>
+        <payment>
+            <creditCard>
+                <cardNumber>4111111111111111</cardNumber>
+                <expirationDate>2025-12</expirationDate>
+                <isPaymentToken>true</isPaymentToken>
+                <cryptogram>EjRWeJASNFZ4kBI0VniQEjRWeJA=</cryptogram>
+            </creditCard>
+        </payment>
+        <processingOptions>
+            <isSubsequentAuth>true</isSubsequentAuth>
+        </processingOptions>
+        <subsequentAuthInformation>
+            <originalNetworkTransId>123456789NNNH</originalNetworkTransId>
+            <originalAuthAmount>45.00</originalAuthAmount>
+            <reason>resubmission</reason>
+        </subsequentAuthInformation>
+        <authorizationIndicatorType>
+            <authorizationIndicator>final</authorizationIndicator>
+        </authorizationIndicatorType>
+    </transactionRequest>
+</createTransactionRequest>

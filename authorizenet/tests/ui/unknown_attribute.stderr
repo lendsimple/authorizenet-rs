@@ -1,0 +1,5 @@
+error: unknown anet attribute `renam`
+ --> tests/ui/unknown_attribute.rs:5:12
+  |
+5 |     #[anet(renam = "x")]
+  |            ^^^^^

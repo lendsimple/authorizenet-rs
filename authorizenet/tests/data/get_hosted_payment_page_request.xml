@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getHostedPaymentPageRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <transactionRequest>
+    <transactionType>authCaptureTransaction</transactionType>
+    <amount>20.00</amount>
+    <profile>
+      <customerProfileId>123456789</customerProfileId>
+    </profile>
+    <customer>
+      <email>ellen@mail.com</email>
+    </customer>
+    <billTo>
+        <firstName>Ellen</firstName>
+        <lastName>Johnson</lastName>
+        <company>Souveniropolis</company>
+        <address>14 Main Street</address>
+        <city>Pecan Springs</city>
+        <state>TX</state>
+        <zip>44628</zip>
+        <country>US</country>
+    </billTo>
+  </transactionRequest>
+  <hostedPaymentSettings>
+    <setting>
+      <settingName>hostedPaymentReturnOptions</settingName>
+      <settingValue>{"showReceipt": true, "url": "https://mysite.com/receipt", "urlText": "Continue", "cancelUrl": "https://mysite.com/cancel", "cancelUrlText": "Cancel"}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentButtonOptions</settingName>
+      <settingValue>{"text": "Pay"}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentStyleOptions</settingName>
+      <settingValue>{"bgColor": "blue"}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentPaymentOptions</settingName>
+      <settingValue>{"cardCodeRequired": false, "showCreditCard": true, "showBankAccount": true}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentSecurityOptions</settingName>
+      <settingValue>{"captcha": false}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentShippingAddressOptions</settingName>
+      <settingValue>{"show": false, "required": false}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentBillingAddressOptions</settingName>
+      <settingValue>{"show": true, "required":false}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentCustomerOptions</settingName>
+      <settingValue>{"showEmail": false, "requiredEmail": false, "addPaymentProfile": true}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentOrderOptions</settingName>
+      <settingValue>{"show": true, "merchantName": "G and S Questions Inc."}</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedPaymentIFrameCommunicatorUrl</settingName>
+      <settingValue>{"url": "https://mysite.com/special"}</settingValue>
+    </setting>
+  </hostedPaymentSettings>
+</getHostedPaymentPageRequest>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <refId>123456</refId>
+  <transactionRequest>
+    <transactionType>refundTransaction</transactionType>
+    <amount>5</amount>
+    <payment>
+      <bankAccount>
+        <accountType>checking</accountType>
+        <routingNumber>121042882</routingNumber>
+        <accountNumber>123456789</accountNumber>
+        <nameOnAccount>John Doe</nameOnAccount>
+      </bankAccount>
+    </payment>
+    <refTransId>2148889729</refTransId>
+    <order>
+      <invoiceNumber>INV-12345</invoiceNumber>
+      <description>Product Description</description>
+    </order>
+  </transactionRequest>
+</createTransactionRequest>

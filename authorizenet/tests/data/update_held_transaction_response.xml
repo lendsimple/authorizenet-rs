@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateHeldTransactionResponse
+    xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+    <refId>12345</refId>
+    <messages>
+        <resultCode>Ok</resultCode>
+        <message>
+            <code>I00001</code>
+            <text>Successful.</text>
+        </message>
+    </messages>
+    <transactionResponse>
+        <responseCode>1</responseCode>
+        <authCode>40C68K</authCode>
+        <avsResultCode>Y</avsResultCode>
+        <cvvResultCode>P</cvvResultCode>
+        <cavvResultCode>2</cavvResultCode>
+        <transId>60010736710</transId>
+        <refTransID>60010736710</refTransID>
+        <transHash>722F2079BDC5500935D32BEDDF6165B1</transHash>
+        <accountNumber>XXXX0015</accountNumber>
+        <accountType>Mastercard</accountType>
+        <messages>
+            <message>
+                <code>1</code>
+                <description>This transaction has been approved.</description>
+            </message>
+        </messages>
+        <transHashSha2>EFF9481A54853F79C37DF2602339102DBB15D9B42D56FC20373B2E48E6918D2FD4B8334C916301AF01E41A4FC7159FD434725BE9471DF285243F6B0A63A99F76</transHashSha2>
+    </transactionResponse>
+</updateHeldTransactionResponse>

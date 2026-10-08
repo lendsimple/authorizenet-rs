@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ARBGetSubscriptionResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance">
+    <refId>123456</refId>
+    <messages>
+        <resultCode>Ok</resultCode>
+        <message>
+            <code>I00001</code>
+            <text>Successful.</text>
+        </message>
+    </messages>
+    <subscription>
+        <name>Sample subscription</name>
+        <paymentSchedule>
+            <interval>
+                <length>7</length>
+                <unit>days</unit>
+            </interval>
+            <startDate>2017-09-09</startDate>
+            <totalOccurrences>9999</totalOccurrences>
+            <trialOccurrences>1</trialOccurrences>
+        </paymentSchedule>
+        <amount>10.29</amount>
+        <trialAmount>1.00</trialAmount>
+        <status>active</status>
+        <profile>
+            <merchantCustomerId>973</merchantCustomerId>
+            <description>Profile description here</description>
+            <email>TestEmail5555@domain.com</email>
+            <customerProfileId>1812912918</customerProfileId>
+            <paymentProfile>
+                <customerType>individual</customerType>
+                <billTo>
+                    <firstName>Arte</firstName>
+                    <lastName>Johnson</lastName>
+                    <company>test Co.</company>
+                    <address>123 Test St.</address>
+                    <city>Testville</city>
+                    <state>AZ</state>
+                    <zip>85282</zip>
+                    <country>US</country>
+                </billTo>
+                <customerPaymentProfileId>1807515631</customerPaymentProfileId>
+                <payment>
+                    <creditCard>
+                        <cardNumber>XXXX1111</cardNumber>
+                        <expirationDate>XXXX</expirationDate>
+                    </creditCard>
+                </payment>
+            </paymentProfile>
+            <shippingProfile>
+                <firstName>Aaron</firstName>
+                <lastName>Wright</lastName>
+                <company>Testing, Inc.</company>
+                <address>123 Testing St.</address>
+                <city>Lehi</city>
+                <state>UT</state>
+                <zip>84043</zip>
+                <country>US</country>
+                <phoneNumber>520-254-5038</phoneNumber>
+                <customerAddressId>1811684122</customerAddressId>
+            </shippingProfile>
+        </profile>
+        <arbTransactions>
+            <arbTransaction>
+                <response>The credit card has expired.</response>
+                <submitTimeUTC>2017-09-14T18:40:31.247</submitTimeUTC>
+                <payNum>2</payNum>
+                <attemptNum>1</attemptNum>
+            </arbTransaction>
+        </arbTransactions>
+    </subscription>
+</ARBGetSubscriptionResponse>

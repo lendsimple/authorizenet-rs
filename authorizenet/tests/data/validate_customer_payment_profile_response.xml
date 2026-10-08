@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<validateCustomerPaymentProfileResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <directResponse>1,1,1,This transaction has been approved.,ATVU2R,Y,10792,none,Test transaction for ValidateCustomerPaymentProfile.,0.00,CC,auth_only,MerchantCustID1,Customer FirstName,Customer LastName,,123 Main St.,Bellevue,WA,98004,US,123-123-1235,,customer-profile-email@here.com,,,,,,,,,0.00,0.00,0.00,FALSE,none,45E31403DF418285D0192EBFE8CD3EC8,P,2,,,,,,,,,,,XXXX1111,Visa,,,,,,,0RJ0ZYR9QMD7V6WVD8WVGLK,,,,,,,,,,</directResponse>
+</validateCustomerPaymentProfileResponse>

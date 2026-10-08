@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getTransactionDetailsResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <messages>
+        <resultCode>Ok</resultCode>
+        <message>
+            <code>I00001</code>
+            <text>Successful.</text>
+        </message>
+    </messages>
+    <transaction>
+        <transId>40022826172</transId>
+        <submitTimeUTC>2018-12-14T08:54:33.177Z</submitTimeUTC>
+        <submitTimeLocal>2018-12-14T00:54:33.177</submitTimeLocal>
+        <transactionType>authCaptureTransaction</transactionType>
+        <transactionStatus>pendingFinalSettlement</transactionStatus>
+        <responseCode>1</responseCode>
+        <responseReasonCode>1</responseReasonCode>
+        <subscription>
+            <id>5486668</id>
+            <payNum>1</payNum>
+        </subscription>
+        <responseReasonDescription>Approval</responseReasonDescription>
+        <authCode>12CD56</authCode>
+        <AVSResponse>Y</AVSResponse>
+        <cardCodeResponse>M</cardCodeResponse>
+        <batch>
+            <batchId>8863437</batchId>
+            <settlementTimeUTC>2018-12-14T15:12:19.473Z</settlementTimeUTC>
+            <settlementTimeLocal>2018-12-14T07:12:19.473</settlementTimeLocal>
+            <settlementState>settlementError</settlementState>
+        </batch>
+        <authAmount>10.29</authAmount>
+        <settleAmount>10.29</settleAmount>
+        <taxExempt>false</taxExempt>
+        <payment>
+            <creditCard>
+                <cardNumber>XXXX1111</cardNumber>
+                <expirationDate>XXXX</expirationDate>
+                <cardType>Visa</cardType>
+            </creditCard>
+        </payment>
+        <billTo>
+            <firstName>Iam</firstName>
+            <lastName>Testing</lastName>
+            <address>123</address>
+            <zip>98004</zip>
+        </billTo>
+        <recurringBilling>false</recurringBilling>
+        <product>Card Not Present</product>
+        <marketType>eCommerce</marketType>
+        <networkTransId>123456789NNNH</networkTransId>
+        <originalNetworkTransId>129456789 DFG H</originalNetworkTransId>
+        <originalAuthAmount>12.00</originalAuthAmount>
+    <authorizationIndicator>pre</authorizationIndicator>
+    </transaction>
+</getTransactionDetailsResponse>

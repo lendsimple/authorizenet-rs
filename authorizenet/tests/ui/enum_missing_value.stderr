@@ -1,0 +1,5 @@
+error: missing `#[anet(value = "...")]` giving the XML value
+ --> tests/ui/enum_missing_value.rs:7:5
+  |
+7 |     Blue,
+  |     ^^^^

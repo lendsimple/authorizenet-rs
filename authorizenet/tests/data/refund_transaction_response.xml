@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createTransactionResponse xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+	<refId>123456</refId>
+	<messages>
+		<resultCode>Ok</resultCode>
+		<message>
+			<code>I00001</code>
+			<text>Successful.</text>
+		</message>
+	</messages>
+	<transactionResponse>
+		<responseCode>1</responseCode>
+		<authCode />
+		<avsResultCode>P</avsResultCode>
+		<cvvResultCode />
+		<cavvResultCode />
+		<transId>1234569999</transId>
+		<refTransID>1234567890</refTransID>
+		<transHash>362802181B7D3947E862E42FD0FD8219</transHash>
+		<accountNumber>XXXX0015</accountNumber>
+		<accountType>Mastercard</accountType>
+		<messages>
+			<message>
+				<code>1</code>
+				<description>This transaction has been approved.</description>
+			</message>
+		</messages>
+	</transactionResponse>
+</createTransactionResponse>

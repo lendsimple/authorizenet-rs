@@ -1,0 +1,9 @@
+[workspace]
+resolver = "3"
+members = ["authorizenet", "authorizenet-derive", "xtask"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+authors = ["Michael Lavers <kolanos@gmail.com>"]
+version = "0.1.0"

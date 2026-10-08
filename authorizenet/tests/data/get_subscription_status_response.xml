@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ARBGetSubscriptionStatusResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" note="Status with a capital 'S' is obsolete.">
+	<refId>123456</refId>
+	<messages>
+		<resultCode>Error</resultCode>
+		<message>
+			<code>E00035</code>
+			<text>The subscription cannot be found.</text>
+		</message>
+	</messages>
+</ARBGetSubscriptionStatusResponse>

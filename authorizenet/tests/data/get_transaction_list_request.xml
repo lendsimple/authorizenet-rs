@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getTransactionListRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+    <merchantAuthentication>
+        <name>5KP3u95bQpv</name>
+        <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+    </merchantAuthentication>
+    <batchId>6680535</batchId>
+    <sorting>
+      <orderBy>submitTimeUTC</orderBy>
+      <orderDescending>true</orderDescending>
+    </sorting>
+    <paging>
+      <limit>100</limit>
+      <offset>1</offset>
+    </paging>
+</getTransactionListRequest>

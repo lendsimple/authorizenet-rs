@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>9bSaKC66uHg</name>
+    <transactionKey>8xszx7B7674QxHqe</transactionKey>
+  </merchantAuthentication>
+  <refId>123456</refId>
+   <transactionRequest>
+    <transactionType>authOnlyTransaction</transactionType>
+    <amount>15.3</amount>
+    <profile>
+       <customerProfileId>40338125</customerProfileId>
+      <paymentProfile>
+        <paymentProfileId>1000177237</paymentProfileId>
+      </paymentProfile>
+    </profile>
+    <processingOptions>
+       	<isSubsequentAuth>true</isSubsequentAuth>
+    </processingOptions>
+   <subsequentAuthInformation>
+        <originalNetworkTransId>123456789123456</originalNetworkTransId>
+		<originalAuthAmount>45.00</originalAuthAmount>
+		<reason>resubmission</reason>
+    </subsequentAuthInformation>
+    <authorizationIndicatorType>
+		<authorizationIndicator>final</authorizationIndicator>
+	</authorizationIndicatorType>
+  </transactionRequest>
+</createTransactionRequest>

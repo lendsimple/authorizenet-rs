@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getCustomerShippingAddressResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance">
+   <messages>
+      <resultCode>Ok</resultCode>
+      <message>
+         <code>I00001</code>
+         <text>Successful.</text>
+      </message>
+   </messages>
+   <address>
+      <firstName>China</firstName>
+      <lastName>Bayles</lastName>
+      <company>Thyme for Tea</company>
+      <address>12 Main Street</address>
+      <city>Pecan Springs</city>
+      <state>TX</state>
+      <zip>44628</zip>
+      <country>US</country>
+      <customerAddressId>37457091</customerAddressId>
+   </address>
+   <subscriptionIds>
+      <subscriptionId>3078184</subscriptionId>
+   </subscriptionIds>
+</getCustomerShippingAddressResponse>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getHostedProfilePageRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <customerProfileId>YourProfileID</customerProfileId>
+  <hostedProfileSettings>
+    <setting>
+      <settingName>hostedProfileReturnUrl</settingName>
+      <settingValue>https://returnurl.com/return/</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedProfileReturnUrlText</settingName>
+      <settingValue>Continue to confirmation page.</settingValue>
+    </setting>
+    <setting>
+      <settingName>hostedProfilePageBorderVisible</settingName>
+      <settingValue>true</settingValue>
+    </setting>
+ </hostedProfileSettings>
+</getHostedProfilePageRequest>

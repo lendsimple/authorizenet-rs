@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getHostedPaymentPageResponse xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <token>fpXAkWfQzJUD6zzuU+yz9olx2YkoHd2bPzjm6u/teYYsKi3KmR9xmszKsEvw8bafqxwpshKqAUuXUp0uPMvWjelVNZDv+TYDcsq2+X+B7kuoQpnQeBnhMZg</token>
+</getHostedPaymentPageResponse>

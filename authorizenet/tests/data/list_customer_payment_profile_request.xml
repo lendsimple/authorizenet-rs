@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getCustomerPaymentProfileListRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <searchType>cardsExpiringInMonth</searchType>
+  <month>2025-12</month>
+  <sorting>
+  	<orderBy>id</orderBy>
+    <orderDescending>false</orderDescending>
+  </sorting>
+  <paging>
+    <limit>10</limit>
+    <offset>1</offset>
+  </paging>
+</getCustomerPaymentProfileListRequest>

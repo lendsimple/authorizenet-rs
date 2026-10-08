@@ -1,0 +1,5 @@
+error: `flatten` fields must not be `Option` or `Vec`
+  --> tests/ui/flatten_option.rs:10:12
+   |
+10 |     #[anet(flatten)]
+   |            ^^^^^^^

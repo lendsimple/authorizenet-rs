@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateHeldTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <refId>12345</refId>
+  <heldTransactionRequest>
+    <action>approve</action>
+    <refTransId>12345</refTransId>
+  </heldTransactionRequest>
+</updateHeldTransactionRequest>

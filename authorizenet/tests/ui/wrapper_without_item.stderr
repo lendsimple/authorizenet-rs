@@ -1,0 +1,5 @@
+error: `wrapper` requires `item = "..."` naming the repeated child element
+ --> tests/ui/wrapper_without_item.rs:5:12
+  |
+5 |     #[anet(wrapper)]
+  |            ^^^^^^^

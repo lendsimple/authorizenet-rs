@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<createTransactionResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <refId>
+    123456
+  </refId>
+  <messages>
+    <resultCode>
+      Ok
+    </resultCode>
+    <message>
+      <code>
+        I00001
+      </code>
+      <text>
+        Successful.
+      </text>
+    </message>
+  </messages>
+  <transactionResponse>
+    <responseCode>
+      1
+    </responseCode>
+    <authCode />
+    <avsResultCode>
+      P
+    </avsResultCode>
+    <cvvResultCode />
+    <cavvResultCode />
+    <transId>
+      2214627492
+    </transId>
+    <refTransID />
+    <transHash>
+      7A6DCD2645DF873C035DCE4832C08036
+    </transHash>
+    <accountNumber>
+      XXXXX6789
+    </accountNumber>
+    <accountType>
+      eCheck
+    </accountType>
+    <messages>
+      <message>
+        <code>
+          1
+        </code>
+        <description>
+          This transaction has been approved.
+        </description>
+      </message>
+    </messages>
+  </transactionResponse>
+</createTransactionResponse>

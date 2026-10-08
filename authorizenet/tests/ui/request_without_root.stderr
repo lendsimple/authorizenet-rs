@@ -1,0 +1,5 @@
+error: `request` requires `root = "..."`
+ --> tests/ui/request_without_root.rs:4:8
+  |
+4 | #[anet(request)]
+  |        ^^^^^^^

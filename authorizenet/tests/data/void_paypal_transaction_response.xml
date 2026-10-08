@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createTransactionResponse xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="https://www.w3.org/2001/XMLSchema" xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <transactionResponse>
+    <responseCode>1</responseCode>
+    <rawResponseCode>0</rawResponseCode>
+    <transId>128</transId>
+    <refTransID>128</refTransID>
+    <transHash>A7C677FBB549F6362BB4017AA844C7AE</transHash>
+    <accountType>PayPal</accountType>
+    <messages>
+      <message>
+        <code>1</code>
+        <description>This transaction has been approved.</description>
+      </message>
+    </messages>
+  </transactionResponse>
+</createTransactionResponse>

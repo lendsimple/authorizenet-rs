@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ARBCreateSubscriptionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+	<merchantAuthentication>
+		<name>5KP3u95bQpv</name>
+		<transactionKey>346HZ32z3fP4hTG2</transactionKey>
+	</merchantAuthentication>
+	<refId>123456</refId>
+	<subscription>
+		<name>Sample subscription</name>
+		<paymentSchedule>
+			<interval>
+				<length>1</length>
+				<unit>months</unit>
+			</interval>
+			<startDate>2020-08-30</startDate>
+			<totalOccurrences>12</totalOccurrences>
+			<trialOccurrences>1</trialOccurrences>
+		</paymentSchedule>
+		<amount>10.29</amount>
+		<trialAmount>0.00</trialAmount>
+		<payment>
+			<creditCard>
+				<cardNumber>4111111111111111</cardNumber>
+				<expirationDate>2025-12</expirationDate>
+			</creditCard>
+		</payment>
+		<billTo>
+			<firstName>John</firstName>
+			<lastName>Smith</lastName>
+		</billTo>
+	</subscription>
+</ARBCreateSubscriptionRequest>

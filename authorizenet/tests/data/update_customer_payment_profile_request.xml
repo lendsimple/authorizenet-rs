@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <merchantAuthentication>
+    <name>5KP3u95bQpv</name>
+    <transactionKey>346HZ32z3fP4hTG2</transactionKey>
+  </merchantAuthentication>
+  <customerProfileId>10000</customerProfileId>
+  <paymentProfile>
+    <billTo>
+      <firstName>John</firstName>
+      <lastName>Doe</lastName>
+      <company></company>
+      <address>123 Main St.</address>
+      <city>Bellevue</city>
+      <state>WA</state>
+      <zip>98004</zip>
+      <country>US</country>
+      <phoneNumber>000-000-0000</phoneNumber>
+      <faxNumber></faxNumber>
+    </billTo>
+    <payment>
+      <creditCard>
+        <cardNumber>4111111111111111</cardNumber>
+        <expirationDate>2026-01</expirationDate>
+      </creditCard>
+    </payment>
+    <defaultPaymentProfile>false</defaultPaymentProfile>
+    <customerPaymentProfileId>20000</customerPaymentProfileId>
+  </paymentProfile>
+  <validationMode>liveMode</validationMode>
+</updateCustomerPaymentProfileRequest>
