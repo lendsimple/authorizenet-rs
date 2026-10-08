@@ -5,7 +5,7 @@
 //! passing a callback macro, so the clients' methods and the request-response pairing
 //! cannot drift apart.
 
-/// Invokes `$callback!` with the operation table.
+/// Invokes `$callback!` with the operation table, preceded by `[args]`.
 ///
 /// The table is a list of groups:
 ///
@@ -16,8 +16,9 @@
 /// }
 /// ```
 macro_rules! operation_table {
-    ($callback:ident) => {
+    ($callback:ident $(, $arg:tt)*) => {
         $callback! {
+            [$($arg),*]
             account_updater_jobs => AccountUpdaterJobs {
                 /// Details of each card updated or deleted by the Account Updater
                 /// process in a month, up to 1000 per request; use paging for more.
@@ -163,9 +164,12 @@ macro_rules! operation_table {
     };
 }
 
+#[cfg(any(feature = "async", feature = "blocking"))]
+pub(crate) use operation_table;
+
 /// Implements `ApiRequest` for each request in the table.
 macro_rules! impl_api_requests {
-    ($(
+    ([] $(
         $group:ident => $handle:ident {
             $(
                 $(#[$doc:meta])*
@@ -183,3 +187,83 @@ macro_rules! impl_api_requests {
 }
 
 operation_table!(impl_api_requests);
+
+/// A client's resource handles and its methods returning them, one per group.
+///
+/// Arguments: `[Client, async]` or `[Client, blocking]`. `Client` must have an
+/// `execute` method, async or not.
+#[cfg(any(feature = "async", feature = "blocking"))]
+macro_rules! resource_handles {
+    (
+        [$client:ident, $mode:ident]
+        $(
+            $group:ident => $handle:ident {
+                $(
+                    $(#[$doc:meta])*
+                    $method:ident($request:ident) -> $response:ident;
+                )*
+            }
+        )*
+    ) => {
+        impl $client {
+            $(
+                #[doc = concat!("The `", stringify!($group), "` operations.")]
+                pub fn $group(&self) -> $handle<'_> {
+                    $handle { client: self }
+                }
+            )*
+        }
+
+        $(
+            #[doc = concat!(
+                "The `", stringify!($group), "` operations, from [`", stringify!($client),
+                "::", stringify!($group), "`]."
+            )]
+            #[derive(Debug, Clone, Copy)]
+            pub struct $handle<'a> {
+                client: &'a $client,
+            }
+
+            impl $handle<'_> {
+                $(
+                    resource_handles!(@method $mode $method $request $response $(#[$doc])*);
+                )*
+            }
+        )*
+    };
+
+    (@method $mode:ident $method:ident $request:ident $response:ident $(#[$doc:meta])*) => {
+        resource_handles!(@sig $mode $method $request $response
+            $(#[$doc])*
+            #[doc = ""]
+            #[doc = concat!(
+                "Sends a [`", stringify!($request), "`](crate::schema::", stringify!($request),
+                ") and returns its [`", stringify!($response), "`](crate::schema::",
+                stringify!($response), ")."
+            )]
+        );
+    };
+
+    (@sig async $method:ident $request:ident $response:ident $(#[$doc:meta])*) => {
+        $(#[$doc])*
+        pub async fn $method(
+            &self,
+            request: &$crate::schema::$request,
+        ) -> ::core::result::Result<$crate::schema::$response, $crate::Error> {
+            self.client.execute(request).await
+        }
+    };
+
+    (@sig blocking $method:ident $request:ident $response:ident $(#[$doc:meta])*) => {
+        $(#[$doc])*
+        pub fn $method(
+            &self,
+            request: &$crate::schema::$request,
+        ) -> ::core::result::Result<$crate::schema::$response, $crate::Error> {
+            self.client.execute(request)
+        }
+    };
+}
+
+#[cfg(any(feature = "async", feature = "blocking"))]
+pub(crate) use resource_handles;

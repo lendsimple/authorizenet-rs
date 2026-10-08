@@ -3389,6 +3389,24 @@ impl TryFrom<AnyResponse> for SaveDeviceSnResponse {
     }
 }
 
+/// Elements whose values are secret, which logs redact.
+#[doc(hidden)]
+pub const SENSITIVE_ELEMENTS: &[&str] = &[
+    "accessToken",
+    "accountNumber",
+    "activationCode",
+    "cardCode",
+    "cardNumber",
+    "dataValue",
+    "encPassword",
+    "password",
+    "routingNumber",
+    "sessionToken",
+    "track1",
+    "track2",
+    "transactionKey",
+];
+
 /// Invokes `$callback!` with the path of every request type.
 #[doc(hidden)]
 #[macro_export]

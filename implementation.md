@@ -389,7 +389,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 **Goal**:
 - `Client` (reqwest) and `blocking::Client` (ureq) with builders, timeout, environment, injected HTTP client, User-Agent and tracing with redaction.
 - Resource handles generated for both clients.
-- Port the Python test suite: 121 sync+async tests across 13 files.
+- Port the Python test suite: 117 sync+async tests across 13 files.
 
 **Success Criteria**:
 - `cargo test --all-features` passes.
@@ -404,7 +404,19 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 - Error tests are ported from `test_errors.py`.
 - Redaction test: a captured trace never contains a card number or transaction key.
 
-**Status**: Not Started
+**Status**: Complete
+
+**Notes (as built)**:
+- API: `Client::new(credentials)` or `Client::builder(credentials)`, with credentials a required argument rather than a `.credentials()` setter, so a client cannot be built without them. Builder settings: `environment`, `timeout`, `user_agent`, `validate_requests`, plus `http_client(reqwest::Client)` / `agent(ureq::Agent)`; timeout and user agent apply per request, so they hold for injected clients too. Resource methods take the request by reference: `client.transactions().create(&request)`. `execute(&request)` sends any request.
+- The resource handles of both clients come from `operation_table!` through `resource_handles!`.
+- Features: `async` (default, reqwest), `blocking` (ureq), `rustls` (default) or `native-tls`. All six combinations pass clippy with `-D warnings`. `cargo tree` shows no tokio, hyper or reqwest with only `blocking`.
+- New `Error::Transport(TransportError)`, with `is_timeout()`.
+- Logging: an `authorizenet` span per request with its `operation`; DEBUG events for request, status and failure; TRACE events with bodies, redacted using `SENSITIVE_ELEMENTS`, which codegen emits from `overrides.toml`. A truncated body is redacted to its end.
+- Ported tests: 55 sync/async pairs, one per Python test pair. Each asserts result code `Ok` and that the request body the mock received matches the request fixture, where there is one. Requests the Python tests build in code are built the same way with the builders. Not ported: `mobile_devices.login` (removed from the XSD). `subscriptions.get_status` is ported as the error test it is in Python (`E00035`). `get_hosted_profile_page` builds its request as Python does, instead of using the fixture with the invalid `YourProfileID`.
+- Beyond the Python suite: HTTP error status, connection failure, timeout, validation on and off, `Send` futures, sharing a client across tokio tasks, and log redaction. The redaction tests sit in their own binary (`tests/logging.rs`) with a global subscriber. A thread-local subscriber was unreliable while other tests ran concurrently, because `tracing` caches callsite interest globally.
+- The blocking client reads responses up to 100 MB (ureq's default limit is 10 MB).
+
+
 
 ## Stage 5: Hardening, docs, release prep
 **Goal**:

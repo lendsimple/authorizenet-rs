@@ -54,13 +54,15 @@ fn read(path: &Path) -> Result<String> {
     std::fs::read_to_string(path).map_err(|e| format!("reading {}: {e}", path.display()).into())
 }
 
+fn load_overrides() -> Result<model::Overrides> {
+    let path = workspace_root().join("schema/overrides.toml");
+    Ok(toml::from_str(&read(&path)?).map_err(|e| format!("schema/overrides.toml: {e}"))?)
+}
+
 /// Builds the model from the vendored schema and overrides.
 pub fn load_model() -> Result<model::Model> {
-    let root = workspace_root();
-    let schema = xsd::parse(&read(&root.join("schema/AnetApiSchema.xsd"))?)?;
-    let overrides: model::Overrides = toml::from_str(&read(&root.join("schema/overrides.toml"))?)
-        .map_err(|e| format!("schema/overrides.toml: {e}"))?;
-    Ok(model::build(&schema, &overrides)?)
+    let schema = xsd::parse(&read(&workspace_root().join("schema/AnetApiSchema.xsd"))?)?;
+    Ok(model::build(&schema, &load_overrides()?)?)
 }
 
 fn drift(python_dir: &Path) -> Result<()> {
@@ -76,9 +78,10 @@ fn drift(python_dir: &Path) -> Result<()> {
 
 fn codegen(check: bool) -> Result<()> {
     let model = load_model()?;
+    let sensitive = load_overrides()?.sensitive;
     let out_dir = workspace_root().join("authorizenet/src/schema");
     let mut stale = Vec::new();
-    for (name, contents) in emit::render(&model) {
+    for (name, contents) in emit::render(&model, &sensitive) {
         let path = out_dir.join(name);
         let current = std::fs::read_to_string(&path).unwrap_or_default();
         if current == contents {

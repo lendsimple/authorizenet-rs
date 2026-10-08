@@ -30,6 +30,11 @@ pub enum Error {
         /// The response body, which may help diagnose the failure.
         body: String,
     },
+
+    /// The request could not be sent or its response not received: a connection,
+    /// TLS or timeout failure.
+    #[error("HTTP request failed: {0}")]
+    Transport(#[from] TransportError),
 }
 
 impl Error {
@@ -45,6 +50,32 @@ impl Error {
 impl From<ApiError> for Error {
     fn from(err: ApiError) -> Self {
         Error::Api(Box::new(err))
+    }
+}
+
+/// A failure of the HTTP client underneath.
+#[derive(Debug, thiserror::Error)]
+#[error("{source}")]
+pub struct TransportError {
+    source: Box<dyn std::error::Error + Send + Sync>,
+    timeout: bool,
+}
+
+impl TransportError {
+    #[cfg(any(feature = "async", feature = "blocking"))]
+    pub(crate) fn new(
+        source: impl Into<Box<dyn std::error::Error + Send + Sync>>,
+        timeout: bool,
+    ) -> Self {
+        Self {
+            source: source.into(),
+            timeout,
+        }
+    }
+
+    /// Whether the request timed out.
+    pub fn is_timeout(&self) -> bool {
+        self.timeout
     }
 }
 

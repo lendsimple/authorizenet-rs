@@ -10,12 +10,29 @@ authors.workspace = true
 authorizenet-derive = { version = "0.1.0", path = "../authorizenet-derive" }
 bon = "3.10.2"
 quick-xml = "0.42.0"
+reqwest = { version = "0.13.5", default-features = false, optional = true }
 rust_decimal = "1.43.0"
 secrecy = "0.10.3"
 thiserror = "2.0.21"
 time = { version = "0.3.55", features = ["parsing", "formatting", "macros"] }
+tracing = "0.1.44"
+ureq = { version = "3.4.2", optional = true, default-features = false }
 
 [dev-dependencies]
+mockito = "1.7.2"
 pretty_assertions = "1.4.1"
 roxmltree = "0.21.1"
+tokio = { version = "1.53.2", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = "0.3.23"
 trybuild = "1.0.122"
+
+[features]
+default = ["async", "rustls"]
+## The async `Client`, built on reqwest (which runs on tokio).
+async = ["dep:reqwest"]
+## The `blocking::Client`, built on ureq (no async runtime).
+blocking = ["dep:ureq"]
+## TLS with rustls.
+rustls = ["reqwest?/rustls", "ureq?/rustls"]
+## TLS with the platform's native library.
+native-tls = ["reqwest?/native-tls", "ureq?/native-tls"]
