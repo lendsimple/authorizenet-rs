@@ -11,6 +11,8 @@ readme = "README.md"
 documentation = "https://docs.rs/authorizenet-derive"
 keywords = ["authorize-net", "xml", "derive"]
 categories = ["development-tools::procedural-macro-helpers"]
+# Only what users build; tests, fixtures and examples stay in the repository.
+include = ["src/**", "README.md", "LICENSE"]
 
 [dependencies]
 proc-macro2 = "1.0.107"

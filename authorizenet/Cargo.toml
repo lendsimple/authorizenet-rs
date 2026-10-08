@@ -11,6 +11,8 @@ readme = "README.md"
 documentation = "https://docs.rs/authorizenet"
 keywords = ["authorize-net", "payments", "payment-gateway", "credit-card", "api"]
 categories = ["api-bindings", "web-programming::http-client"]
+# Only what users build; tests, fixtures and examples stay in the repository.
+include = ["src/**", "README.md", "LICENSE"]
 
 [package.metadata.docs.rs]
 all-features = true
