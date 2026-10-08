@@ -8,6 +8,8 @@ the crates follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-08
+
 The first release.
 
 ### Added
@@ -37,4 +39,5 @@ The first release.
   secrets redacted from logged bodies and from `Debug` output.
 - TLS through rustls (default) or the platform's library (`native-tls`).
 
-[Unreleased]: https://github.com/lendsimple/authorizenet-rs/commits/main
+[Unreleased]: https://github.com/lendsimple/authorizenet-rs/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/lendsimple/authorizenet-rs/releases/tag/v0.1.0
