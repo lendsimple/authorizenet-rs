@@ -447,7 +447,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 - `cargo publish --dry-run --workspace` packages and verifies both crates.
 
 **Remaining**:
-- ~~Run the sandbox tests~~: all 5 pass (2026-10-08), with the Python suite's sandbox credentials from `tests/constants.py`.
+- ~~Run the sandbox tests~~: all 5 pass (2026-10-08), with the Python suite's sandbox credentials from `tests/constants.py`. All 5 examples also run successfully against the sandbox with them.
 - Push to GitHub and confirm the workflow passes. The workflow is valid YAML, and each of its commands passes locally on macOS; it has not run on Actions, and Linux/Windows have not been tried.
 - Add a `repository` URL to the manifests before publishing (it was left out rather than guessed).
 
