@@ -434,7 +434,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 
 **Tests**: doc tests on the examples, and the live sandbox suite.
 
-**Status**: In Progress — the work is done; two checks need credentials or a GitHub remote (see Remaining).
+**Status**: In Progress — the work is done; CI has not run on GitHub yet (see Remaining).
 
 **Notes (as built)**:
 - Convenience constructors (`src/schema/ext.rs`): `CreditCard::new(..).with_code(..)`, `OpaqueData::new`, `Payment::new` and `From<CreditCard | BankAccount | OpaqueData> for Payment`, `TransactionRequest::{auth_capture, auth_only, prior_auth_capture, refund, void}`, `CreateTransactionRequest::new` / `From<TransactionRequest>`, `Messages::is_ok`, `TransactionResponse::outcome()` → `TransactionOutcome`, `PaymentSchedule::new` with `PaymentScheduleInterval::{months, days}`, and `ApiError::transaction_response()`.
@@ -447,7 +447,7 @@ let resp = client.execute(req).await?;                   // generic escape hatch
 - `cargo publish --dry-run --workspace` packages and verifies both crates.
 
 **Remaining**:
-- Run the sandbox tests with sandbox credentials.
+- ~~Run the sandbox tests~~: all 5 pass (2026-10-08), with the Python suite's sandbox credentials from `tests/constants.py`.
 - Push to GitHub and confirm the workflow passes. The workflow is valid YAML, and each of its commands passes locally on macOS; it has not run on Actions, and Linux/Windows have not been tried.
 - Add a `repository` URL to the manifests before publishing (it was left out rather than guessed).
 
