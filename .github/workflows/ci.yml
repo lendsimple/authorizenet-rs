@@ -4,6 +4,15 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request supersedes a running check.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -19,6 +28,14 @@ jobs:
           toolchain: "stable"
           components: rustfmt
       - run: cargo fmt --all --check
+      - name: Crate LICENSE copies match the root LICENSE
+        run: |
+          for license in */LICENSE; do
+            cmp LICENSE "$license" || {
+              echo "::error file=$license::differs from LICENSE"
+              exit 1
+            }
+          done
 
   clippy:
     runs-on: ubuntu-latest
@@ -69,7 +86,30 @@ jobs:
         with:
           toolchain: "1.88"
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-      - run: cargo check -p authorizenet -p authorizenet-derive --all-features --all-targets
+        with:
+          key: msrv
+      # Skip only the compile-error snapshot test, whose expected output follows
+      # current stable rustc wording.
+      - run: cargo +1.88 test --workspace --all-features -- --skip derive_errors --exact
+
+  minimal-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # v1
+        with:
+          toolchain: "stable"
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # v1
+        with:
+          toolchain: "nightly"
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          key: minimal-versions
+      # Resolve each direct dependency to the lowest version its requirement allows,
+      # so the floors in the manifests stay honest. Only the resolution needs
+      # nightly; the tests run on stable.
+      - run: cargo +nightly update -Z direct-minimal-versions
+      - run: cargo +stable test --workspace --all-features
 
   codegen:
     runs-on: ubuntu-latest
