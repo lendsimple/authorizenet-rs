@@ -96,7 +96,13 @@ pub trait XmlPartial: Default {
 }
 
 /// An `xs:choice` group: exactly one of several sibling elements.
+///
+/// A choice enum can also be an element's whole content; it then implements
+/// [`XmlRead`] and [`XmlWrite`] for that wrapping element.
 pub trait XmlChoice: Sized {
+    /// The type's name in error messages.
+    const TYPE_NAME: &'static str;
+
     /// Whether `name` is one of the group's elements.
     fn matches(name: &str) -> bool;
 
@@ -190,6 +196,16 @@ pub fn from_str<T: XmlRoot>(input: &str) -> Result<T, XmlError> {
     parse_document(input.as_bytes(), false)
 }
 
+/// Parses a document's root element as `T`, whatever the element is called.
+///
+/// Useful for reading the common response fields from any response, or a fragment
+/// such as a `<merchantAuthentication>` element.
+pub fn from_slice_as<T: XmlRead>(input: &[u8]) -> Result<T, XmlError> {
+    let mut r = XmlReader::new(decode(input)?, false);
+    let start = r.read_root()?;
+    T::read_element(&mut r, &start)
+}
+
 /// The local name of a document's root element.
 pub fn root_name(input: &[u8]) -> Result<String, XmlError> {
     let mut r = XmlReader::new(decode(input)?, false);
@@ -276,6 +292,34 @@ pub fn read_scalar_optional<'a, T: XmlScalar>(
         return Ok(None);
     }
     T::from_xml_text(&text).map(Some)
+}
+
+#[doc(hidden)]
+pub fn write_choice_element<T: XmlChoice, W: Write>(
+    value: &T,
+    w: &mut XmlWriter<W>,
+    tag: &str,
+) -> Result<(), XmlError> {
+    w.start(tag, &[])?;
+    value.write_choice(w)?;
+    w.end(tag)
+}
+
+#[doc(hidden)]
+pub fn read_choice_element<T: XmlChoice>(r: &mut XmlReader<'_>) -> Result<T, XmlError> {
+    let mut value = None;
+    r.read_children(T::TYPE_NAME, |r, child, name| {
+        if !T::matches(name) {
+            return Ok(false);
+        }
+        let choice = T::read_choice(r, child, name)?;
+        set_once(&mut value, choice, r, T::TYPE_NAME, name)?;
+        Ok(true)
+    })?;
+    value.ok_or(XmlError::MissingField {
+        ty: T::TYPE_NAME,
+        field: "choice",
+    })
 }
 
 #[doc(hidden)]

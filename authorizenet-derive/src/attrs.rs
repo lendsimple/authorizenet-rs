@@ -45,6 +45,7 @@ pub struct FieldAttrs {
     pub wrapper: Option<Span>,
     pub item: Option<String>,
     pub item_span: Option<Span>,
+    pub keep_empty: Option<Span>,
     pub sensitive: bool,
 }
 
@@ -67,6 +68,8 @@ impl FieldAttrs {
                 } else if meta.path.is_ident("item") {
                     out.item_span = Some(span);
                     out.item = Some(meta.value()?.parse::<LitStr>()?.value());
+                } else if meta.path.is_ident("keep_empty") {
+                    out.keep_empty = Some(span);
                 } else if meta.path.is_ident("sensitive") {
                     out.sensitive = true;
                 } else {
@@ -102,6 +105,12 @@ impl FieldAttrs {
             return Err(syn::Error::new(
                 span,
                 "`rename` has no effect on `flatten` or `choice` fields",
+            ));
+        }
+        if let (None, Some(span)) = (self.wrapper, self.keep_empty) {
+            return Err(syn::Error::new(
+                span,
+                "`keep_empty` is only valid together with `wrapper`",
             ));
         }
         match (self.wrapper, self.item_span) {

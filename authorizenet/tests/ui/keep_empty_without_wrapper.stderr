@@ -1,0 +1,5 @@
+error: `keep_empty` is only valid together with `wrapper`
+ --> tests/ui/keep_empty_without_wrapper.rs:5:12
+  |
+5 |     #[anet(keep_empty)]
+  |            ^^^^^^^^^^

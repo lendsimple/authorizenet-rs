@@ -1,0 +1,91 @@
+# Adjustments applied by `cargo xtask codegen` on top of AnetApiSchema.xsd.
+#
+# Keys that name an owning type use the generated Rust name (e.g. `TransactionRequest`),
+# and keys that name a field use its XML element name. Every entry must match something
+# in the schema; a stale entry is a codegen error.
+
+# Top-level elements that are not API messages.
+skip_elements = ["EnumCollection"]
+
+# Base types whose fields are copied into each extension instead of being kept as a
+# nested `flatten` field, so that `response.messages` works without `.base`.
+inline_bases = ["ANetApiRequest", "ANetApiResponse"]
+
+# Extensions of this base are requests: the client writes `merchantAuthentication`.
+request_base = "ANetApiRequest"
+request_auth_element = "merchantAuthentication"
+
+# Elements declared twice in one type (once by an inlined base): the later copy is
+# dropped. Reading accepts the element in either position.
+dedupe = ["MobileDeviceMfaLoginResponse.sessionToken"]
+
+# Elements the XSD requires but the API (or older data) can leave out.
+optional = [
+    # Added as required to transactionDetailsType; older transactions lack them.
+    "TransactionDetails.tapToPhone",
+    "TransactionDetails.debtRepaymentIndicator",
+]
+
+# Elements whose values are redacted in `Debug` output.
+sensitive = [
+    "accessToken",
+    "accountNumber",
+    "activationCode",
+    "cardCode",
+    "cardNumber",
+    "dataValue",
+    "encPassword",
+    "password",
+    "routingNumber",
+    "sessionToken",
+    "track1",
+    "track2",
+    "transactionKey",
+]
+
+# Rust names for XSD types, where the default (UpperCamelCase without a `Type` or
+# `Enum` suffix) is wrong or collides. Keys are XSD type names, or the generated name
+# of an anonymous type (owner + element).
+[types]
+"MessagesMessage" = "Message"
+
+# Names for `xs:choice` groups that sit inside a type alongside other content.
+# (A type that is nothing but a choice becomes an enum under the type's own name.)
+[choices.Payment]
+enum = "PaymentInstrument"
+field = "instrument"
+
+[choices.MerchantAuthentication]
+enum = "MerchantCredential"
+field = "credential"
+
+[choices.GetTransactionDetailsRequest]
+enum = "TransactionReference"
+field = "reference"
+
+[choices.CreateTransactionRequest]
+enum = "CreateTransactionPayload"
+field = "transaction"
+
+[choices.ListOfAuDetails]
+enum = "AuDetail"
+field = "details"
+
+# `xs:string` fields whose values are one of the schema's enumerations. Values that
+# are not listed still parse, as the enum's `Other` variant.
+[retype]
+"Setting.settingName" = "settingNameEnum"
+"TransactionRequest.transactionType" = "transactionTypeEnum"
+"TransactionDetails.transactionType" = "transactionTypeEnum"
+"TransactionDetails.transactionStatus" = "transactionStatusEnum"
+"TransactionSummary.transactionStatus" = "transactionStatusEnum"
+"BatchDetails.settlementState" = "settlementStateEnum"
+
+# Elements the API sends that the XSD does not declare.
+[[extra_fields]]
+# The Python client's fixtures carry a bare <message> directly under
+# <transactionResponse>, next to the declared <messages> list.
+owner = "TransactionResponse"
+after = "messages"
+element = "message"
+type = "TransactionResponseMessage"

@@ -71,6 +71,8 @@ pub fn expand(input: &DeriveInput, data: &DataEnum) -> Result<TokenStream> {
 
     Ok(quote! {
         impl #x::XmlChoice for #ident {
+            const TYPE_NAME: &'static str = #type_name;
+
             fn matches(name: &str) -> bool {
                 matches!(name, #(#names)|*)
             }
@@ -96,6 +98,25 @@ pub fn expand(input: &DeriveInput, data: &DataEnum) -> Result<TokenStream> {
                 match self {
                     #(#writes)*
                 }
+            }
+        }
+
+        impl #x::XmlWrite for #ident {
+            fn write_element<W: ::std::io::Write>(
+                &self,
+                w: &mut #x::XmlWriter<W>,
+                tag: &str,
+            ) -> ::core::result::Result<(), #x::XmlError> {
+                #x::write_choice_element(self, w, tag)
+            }
+        }
+
+        impl #x::XmlRead for #ident {
+            fn read_element<'a>(
+                r: &mut #x::XmlReader<'a>,
+                _start: &#x::BytesStart<'a>,
+            ) -> ::core::result::Result<Self, #x::XmlError> {
+                #x::read_choice_element(r)
             }
         }
 

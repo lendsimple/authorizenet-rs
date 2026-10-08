@@ -1,0 +1,48 @@
+---
+source: xtask/src/main.rs
+expression: "format!(\"{}\\n{}\", structure(&model, \"ListOfAuDetails\"),\nstructure(&model, \"AuDetail\"))"
+---
+StructDef {
+    name: "ListOfAuDetails",
+    origin: "ListOfAUDetailsType",
+    doc: None,
+    fields: [
+        Field {
+            name: "details",
+            xml: "",
+            kind: Choice,
+            ty: Named(
+                "AuDetail",
+            ),
+            card: List,
+            sensitive: false,
+            doc: None,
+        },
+    ],
+    root: None,
+    request: false,
+    default: true,
+}
+ChoiceDef {
+    name: "AuDetail",
+    origin: "ListOfAuDetails choice",
+    doc: None,
+    variants: [
+        ChoiceVariant {
+            name: "AuUpdate",
+            xml: "auUpdate",
+            ty: Named(
+                "AuUpdate",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "AuDelete",
+            xml: "auDelete",
+            ty: Named(
+                "AuDelete",
+            ),
+            sensitive: false,
+        },
+    ],
+}

@@ -1,0 +1,97 @@
+---
+source: xtask/src/main.rs
+expression: "format!(\"{}\\n{}\", structure(&model, \"Payment\"),\nstructure(&model, \"PaymentInstrument\"))"
+---
+StructDef {
+    name: "Payment",
+    origin: "paymentType",
+    doc: None,
+    fields: [
+        Field {
+            name: "instrument",
+            xml: "",
+            kind: Choice,
+            ty: Named(
+                "PaymentInstrument",
+            ),
+            card: Required,
+            sensitive: false,
+            doc: None,
+        },
+        Field {
+            name: "data_source",
+            xml: "dataSource",
+            kind: Element,
+            ty: String,
+            card: Optional,
+            sensitive: false,
+            doc: None,
+        },
+    ],
+    root: None,
+    request: false,
+    default: false,
+}
+ChoiceDef {
+    name: "PaymentInstrument",
+    origin: "Payment choice",
+    doc: None,
+    variants: [
+        ChoiceVariant {
+            name: "CreditCard",
+            xml: "creditCard",
+            ty: Named(
+                "CreditCard",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "BankAccount",
+            xml: "bankAccount",
+            ty: Named(
+                "BankAccount",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "TrackData",
+            xml: "trackData",
+            ty: Named(
+                "CreditCardTrack",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "EncryptedTrackData",
+            xml: "encryptedTrackData",
+            ty: Named(
+                "EncryptedTrackData",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "PayPal",
+            xml: "payPal",
+            ty: Named(
+                "PayPal",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "OpaqueData",
+            xml: "opaqueData",
+            ty: Named(
+                "OpaqueData",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "Emv",
+            xml: "emv",
+            ty: Named(
+                "PaymentEmv",
+            ),
+            sensitive: false,
+        },
+    ],
+}

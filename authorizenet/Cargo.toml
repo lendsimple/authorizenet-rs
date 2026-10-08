@@ -16,4 +16,5 @@ time = { version = "0.3.55", features = ["parsing", "formatting", "macros"] }
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
+roxmltree = "0.21.1"
 trybuild = "1.0.122"

@@ -25,6 +25,8 @@ enum Kind<'a> {
         item: String,
         item_ty: &'a Type,
         optional: bool,
+        /// Write the wrapper even when the list is empty (a required element).
+        keep_empty: bool,
     },
     /// An XML attribute on this element.
     Attribute {
@@ -222,13 +224,20 @@ fn classify(field: &syn::Field) -> Result<FieldSpec<'_>> {
                 item,
                 item_ty,
                 optional: false,
+                keep_empty: attrs.keep_empty.is_some(),
             },
-            Cardinality::OptionalList(item_ty) => Kind::Wrapped {
-                name,
-                item,
-                item_ty,
-                optional: true,
-            },
+            Cardinality::OptionalList(item_ty) => {
+                if let Some(span) = attrs.keep_empty {
+                    return Err(err(span, "`keep_empty` has no effect on `Option<Vec<T>>`"));
+                }
+                Kind::Wrapped {
+                    name,
+                    item,
+                    item_ty,
+                    optional: true,
+                    keep_empty: false,
+                }
+            }
             _ => {
                 return Err(err(
                     span,
@@ -464,12 +473,17 @@ fn write_child(f: &FieldSpec, x: &TokenStream) -> Option<TokenStream> {
             name,
             item,
             optional,
+            keep_empty,
             ..
         } => Some(if *optional {
             quote! {
                 if let ::core::option::Option::Some(items) = &self.#ident {
                     #x::write_wrapped(items, w, #name, #item)?;
                 }
+            }
+        } else if *keep_empty {
+            quote! {
+                #x::write_wrapped(&self.#ident, w, #name, #item)?;
             }
         } else {
             quote! {

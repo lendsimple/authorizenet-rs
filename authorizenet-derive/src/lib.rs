@@ -21,6 +21,7 @@
 //! - `flatten`: the fields of an XSD base type, written inline.
 //! - `choice`: the field's type is a choice enum; its variants are sibling elements.
 //! - `wrapper, item = "child"`: a `Vec<T>` (or `Option<Vec<T>>`) inside a container element.
+//!   An empty `Vec` omits the container unless `keep_empty` is also given.
 //! - `attribute`: an XML attribute rather than a child element.
 //! - `sensitive`: redacted in `Debug` output.
 //!

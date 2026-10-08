@@ -1,0 +1,120 @@
+---
+source: xtask/src/main.rs
+expression: "format!(\"{}\\n{}\", structure(&model, \"MerchantAuthentication\"),\nstructure(&model, \"MerchantCredential\"))"
+---
+StructDef {
+    name: "MerchantAuthentication",
+    origin: "merchantAuthenticationType",
+    doc: None,
+    fields: [
+        Field {
+            name: "name",
+            xml: "name",
+            kind: Element,
+            ty: String,
+            card: Optional,
+            sensitive: false,
+            doc: None,
+        },
+        Field {
+            name: "credential",
+            xml: "",
+            kind: Choice,
+            ty: Named(
+                "MerchantCredential",
+            ),
+            card: Optional,
+            sensitive: false,
+            doc: None,
+        },
+        Field {
+            name: "mobile_device_id",
+            xml: "mobileDeviceId",
+            kind: Element,
+            ty: String,
+            card: Optional,
+            sensitive: false,
+            doc: None,
+        },
+        Field {
+            name: "enc_password",
+            xml: "encPassword",
+            kind: Element,
+            ty: String,
+            card: Optional,
+            sensitive: true,
+            doc: None,
+        },
+        Field {
+            name: "enc_mobile_device_id",
+            xml: "encMobileDeviceId",
+            kind: Element,
+            ty: String,
+            card: Optional,
+            sensitive: false,
+            doc: None,
+        },
+    ],
+    root: None,
+    request: false,
+    default: true,
+}
+ChoiceDef {
+    name: "MerchantCredential",
+    origin: "MerchantAuthentication choice",
+    doc: None,
+    variants: [
+        ChoiceVariant {
+            name: "TransactionKey",
+            xml: "transactionKey",
+            ty: String,
+            sensitive: true,
+        },
+        ChoiceVariant {
+            name: "SessionToken",
+            xml: "sessionToken",
+            ty: String,
+            sensitive: true,
+        },
+        ChoiceVariant {
+            name: "Password",
+            xml: "password",
+            ty: String,
+            sensitive: true,
+        },
+        ChoiceVariant {
+            name: "ImpersonationAuthentication",
+            xml: "impersonationAuthentication",
+            ty: Named(
+                "ImpersonationAuthentication",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "FingerPrint",
+            xml: "fingerPrint",
+            ty: Named(
+                "FingerPrint",
+            ),
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "ClientKey",
+            xml: "clientKey",
+            ty: String,
+            sensitive: false,
+        },
+        ChoiceVariant {
+            name: "AccessToken",
+            xml: "accessToken",
+            ty: String,
+            sensitive: true,
+        },
+        ChoiceVariant {
+            name: "ActivationCode",
+            xml: "activationCode",
+            ty: String,
+            sensitive: true,
+        },
+    ],
+}

@@ -54,6 +54,7 @@ macro_rules! numeric_scalar {
 }
 
 numeric_scalar! {
+    i16 => "short",
     i32 => "int",
     i64 => "long",
     u32 => "unsignedInt",
@@ -94,4 +95,4 @@ impl XmlScalar for bool {
     }
 }
 
-scalar_element!(String, bool, i32, i64, u32, u64, Decimal);
+scalar_element!(String, bool, i16, i32, i64, u32, u64, Decimal);
