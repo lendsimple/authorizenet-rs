@@ -1,5 +1,7 @@
 # authorizenet
 
+[![CI](https://github.com/lendsimple/authorizenet-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lendsimple/authorizenet-rs/actions/workflows/ci.yml)
+
 A typed Rust client for the [Authorize.Net](https://developer.authorize.net/api/reference/)
 payment API, with async and blocking clients.
 
