@@ -14,6 +14,11 @@ the crates follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   header of a webhook notification against its body, in constant time, and reports
   a malformed header apart from a mismatch (`SignatureError`). It builds for
   WebAssembly.
+- `webhook::parse` (feature `webhooks`) reads a webhook notification's JSON body
+  into a `Notification`: an `EventType` for each of Authorize.Net's published events,
+  and a `Payload` for transactions, customer profiles, payment profiles and
+  subscriptions. Unknown events and entities parse as `Other`, and unknown fields
+  are ignored. `webhook::verify_then_parse` checks the signature first.
 
 ## [0.1.0] - 2026-10-08
 

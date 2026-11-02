@@ -19,8 +19,8 @@
 //!
 //! # Webhooks
 //!
-//! With the `webhooks` feature, `webhook::verify_signature` checks that a webhook
-//! notification came from Authorize.Net.
+//! With the `webhooks` feature, `webhook::verify_then_parse` checks that a webhook
+//! notification came from Authorize.Net and reads it as typed values.
 //!
 //! # Logging
 //!

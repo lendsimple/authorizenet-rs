@@ -170,16 +170,25 @@ pub enum TransactionOutcome {
     Other(String),
 }
 
-impl TransactionResponse {
-    /// The outcome, if the response has a response code.
-    pub fn outcome(&self) -> Option<TransactionOutcome> {
-        Some(match self.response_code.as_deref()?.trim() {
+impl TransactionOutcome {
+    /// The outcome a response code stands for.
+    pub(crate) fn from_code(code: &str) -> Self {
+        match code.trim() {
             "1" => TransactionOutcome::Approved,
             "2" => TransactionOutcome::Declined,
             "3" => TransactionOutcome::Error,
             "4" => TransactionOutcome::HeldForReview,
             other => TransactionOutcome::Other(other.to_owned()),
-        })
+        }
+    }
+}
+
+impl TransactionResponse {
+    /// The outcome, if the response has a response code.
+    pub fn outcome(&self) -> Option<TransactionOutcome> {
+        Some(TransactionOutcome::from_code(
+            self.response_code.as_deref()?,
+        ))
     }
 }
 
