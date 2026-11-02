@@ -25,7 +25,7 @@ authorizenet = "0.1"
 | `ureq` | | `UreqTransport`: the `blocking::Client` sends with ureq, with no async runtime |
 | `rustls` | yes | TLS with rustls |
 | `native-tls` | | TLS with the platform's library |
-| `webhooks` | | `webhook::verify_signature`: checks webhook notifications' signatures |
+| `webhooks` | | `webhook`: checks webhook notifications' signatures and reads them as typed values |
 
 The clients themselves need no feature: you can give them any HTTP client (see
 [Other HTTP clients](#other-http-clients)).
@@ -104,25 +104,42 @@ Other errors are `Validation` (the request was not sent), `Status` (an HTTP erro
 
 ## Webhooks
 
-With the `webhooks` feature, `webhook::verify_signature` checks the `X-ANET-Signature`
-header of a webhook notification: an HMAC-SHA512 of the body, keyed with the
-merchant's Signature Key. Pass the body exactly as it was received, before parsing it.
+With the `webhooks` feature, `webhook::verify_then_parse` checks the `X-ANET-Signature`
+header of a webhook notification (an HMAC-SHA512 of the body, keyed with the
+merchant's Signature Key), then reads the JSON body into a typed `Notification`. Pass
+the body exactly as it was received.
 
 ```rust
 use authorizenet::SecretString;
-use authorizenet::webhook::verify_signature;
+use authorizenet::webhook::{EventType, Payload, verify_then_parse};
 
 fn handle(signature_key: &SecretString, signature: &str, body: &[u8]) {
-    if let Err(err) = verify_signature(signature_key, signature, body) {
-        eprintln!("rejected notification: {err}");
-        return; // and answer, say, 401
+    let notification = match verify_then_parse(signature_key, signature, body) {
+        Ok(notification) => notification,
+        Err(err) => {
+            eprintln!("rejected notification: {err}");
+            return; // and answer, say, 401
+        }
+    };
+    match (&notification.event_type, &notification.payload) {
+        (EventType::RefundCreated, Payload::Transaction(refund)) => {
+            println!("refunded {:?} in {}", refund.auth_amount, refund.id);
+        }
+        (EventType::SubscriptionSuspended, Payload::Subscription(subscription)) => {
+            println!("subscription {} suspended", subscription.id);
+        }
+        _ => {}
     }
-    // The notification came from Authorize.Net: parse and handle it.
 }
 # handle(&SecretString::from("key"), "sha512=00", b"{}");
 ```
 
-Verification is pure Rust, so it works on WebAssembly too.
+`webhook::verify_signature` and `webhook::parse` do each step on its own. Events and
+entities that Authorize.Net adds later parse as `EventType::Other` and
+`Payload::Other`. Settlements and returned eCheck payments have no webhook events:
+their results still come from `getTransactionDetails`.
+
+Webhook support is pure Rust, so it works on WebAssembly too.
 
 ## Logging
 

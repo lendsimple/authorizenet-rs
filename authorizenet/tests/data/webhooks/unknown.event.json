@@ -1,0 +1,13 @@
+{
+  "notificationId": "9d4b2a10-3c5e-4f7a-8b9c-0e1f2a3b4c5d",
+  "eventType": "net.authorize.example.future.created",
+  "eventDate": "2026-11-02T15:04:05Z",
+  "webhookId": "63d6fea2-aa13-4b1d-a204-f5fbc15942b7",
+  "payload": {
+    "entityName": "transaction",
+    "id": "60020981681",
+    "futureField": {
+      "nested": true
+    }
+  }
+}

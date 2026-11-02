@@ -1,0 +1,14 @@
+{
+  "notificationId": "1f0c3a52-4f1e-4b7e-9a61-0d5f8c2b7e03",
+  "eventType": "net.authorize.payment.priorAuthCapture.created",
+  "eventDate": "2026-11-02T15:04:05.1234567Z",
+  "webhookId": "63d6fea2-aa13-4b1d-a204-f5fbc15942b7",
+  "payload": {
+    "responseCode": 1,
+    "authCode": "QK9TZ2",
+    "avsResponse": "Y",
+    "authAmount": 19.99,
+    "entityName": "transaction",
+    "id": "60020981677"
+  }
+}

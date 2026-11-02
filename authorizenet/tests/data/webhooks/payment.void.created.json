@@ -1,0 +1,12 @@
+{
+  "notificationId": "1f0c3a52-4f1e-4b7e-9a61-0d5f8c2b7e05",
+  "eventType": "net.authorize.payment.void.created",
+  "eventDate": "2026-11-02T15:04:05.1234567Z",
+  "webhookId": "63d6fea2-aa13-4b1d-a204-f5fbc15942b7",
+  "payload": {
+    "responseCode": 1,
+    "authAmount": 0.29,
+    "entityName": "transaction",
+    "id": "60020981680"
+  }
+}

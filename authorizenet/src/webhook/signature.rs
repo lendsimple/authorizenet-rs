@@ -1,34 +1,4 @@
-//! Webhook notifications: checking that they came from Authorize.Net.
-//!
-//! Authorize.Net signs every notification it posts. The `X-ANET-Signature` header
-//! holds `sha512=` and the HMAC-SHA512 of the request body, keyed with the merchant's
-//! Signature Key (Merchant Interface: Account > Settings > Security Settings > API
-//! Credentials and Keys). [`verify_signature`] recomputes it and compares the two.
-//!
-//! Pass the body exactly as it was received. A body parsed and serialized again, with
-//! other whitespace or key order, no longer matches its signature.
-//!
-//! ```
-//! use authorizenet::SecretString;
-//! use authorizenet::webhook::{SignatureError, verify_signature};
-//!
-//! fn accept(key: &SecretString, header: Option<&str>, body: &[u8]) -> bool {
-//!     let Some(header) = header else { return false };
-//!     match verify_signature(key, header, body) {
-//!         Ok(()) => true,
-//!         Err(err) if err.is_malformed() => {
-//!             eprintln!("malformed signature header: {err}");
-//!             false
-//!         }
-//!         Err(err) => {
-//!             eprintln!("rejected notification: {err}");
-//!             false
-//!         }
-//!     }
-//! }
-//! # let key = SecretString::from("key");
-//! # assert!(!accept(&key, Some("sha512=00"), b"{}"));
-//! ```
+//! Checking that a notification came from Authorize.Net.
 
 use hmac::{Hmac, KeyInit, Mac};
 use secrecy::{ExposeSecret, SecretString};

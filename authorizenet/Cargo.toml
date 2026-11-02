@@ -25,6 +25,8 @@ quick-xml = "0.42.0"
 reqwest = { version = "0.13.5", default-features = false, optional = true }
 rust_decimal = "1.43.0"
 secrecy = "0.10.3"
+serde = { version = "1.0.229", features = ["derive"], optional = true }
+serde_json = { version = "1.0.151", optional = true }
 sha2 = { version = "0.11.1", optional = true }
 thiserror = "2.0.21"
 time = { version = "0.3.55", features = ["parsing", "formatting", "macros"] }
@@ -49,8 +51,16 @@ ureq = ["dep:ureq"]
 rustls = ["reqwest?/rustls", "ureq?/rustls"]
 ## TLS with the platform's native library.
 native-tls = ["reqwest?/native-tls", "ureq?/native-tls"]
-## `webhook`: verifies the `X-ANET-Signature` of webhook notifications.
-webhooks = ["dep:hmac", "dep:sha2"]
+## `webhook`: verifies the `X-ANET-Signature` of webhook notifications and reads them
+## as typed values.
+webhooks = [
+    "dep:hmac",
+    "dep:sha2",
+    "dep:serde",
+    "dep:serde_json",
+    "rust_decimal/serde",
+    "time/serde",
+]
 
 [[example]]
 name = "charge_credit_card"
