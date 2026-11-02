@@ -17,6 +17,11 @@
 //!
 //! [`protocol`] also encodes requests and decodes responses on their own.
 //!
+//! # Webhooks
+//!
+//! With the `webhooks` feature, `webhook::verify_signature` checks that a webhook
+//! notification came from Authorize.Net.
+//!
 //! # Logging
 //!
 //! The clients emit [`tracing`](https://docs.rs/tracing) events: each request runs in
@@ -42,6 +47,8 @@ pub mod schema;
 pub mod transport;
 pub mod types;
 pub mod validate;
+#[cfg(feature = "webhooks")]
+pub mod webhook;
 pub mod xml;
 
 pub use api::{ApiRequest, ApiResponse};
@@ -53,6 +60,6 @@ pub use rust_decimal::Decimal;
 pub use secrecy::SecretString;
 
 /// Compiles the README's examples as doc tests.
-#[cfg(all(doctest, feature = "reqwest", feature = "ureq"))]
+#[cfg(all(doctest, feature = "reqwest", feature = "ureq", feature = "webhooks"))]
 #[doc = include_str!("../README.md")]
 struct ReadmeDoctests;
