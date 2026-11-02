@@ -25,6 +25,7 @@ authorizenet = "0.1"
 | `ureq` | | `UreqTransport`: the `blocking::Client` sends with ureq, with no async runtime |
 | `rustls` | yes | TLS with rustls |
 | `native-tls` | | TLS with the platform's library |
+| `webhooks` | | `webhook::verify_signature`: checks webhook notifications' signatures |
 
 The clients themselves need no feature: you can give them any HTTP client (see
 [Other HTTP clients](#other-http-clients)).
@@ -100,6 +101,28 @@ match client.transactions().create(request).await {
 
 Other errors are `Validation` (the request was not sent), `Status` (an HTTP error),
 `Transport` (connection, TLS or timeout) and `Xml`.
+
+## Webhooks
+
+With the `webhooks` feature, `webhook::verify_signature` checks the `X-ANET-Signature`
+header of a webhook notification: an HMAC-SHA512 of the body, keyed with the
+merchant's Signature Key. Pass the body exactly as it was received, before parsing it.
+
+```rust
+use authorizenet::SecretString;
+use authorizenet::webhook::verify_signature;
+
+fn handle(signature_key: &SecretString, signature: &str, body: &[u8]) {
+    if let Err(err) = verify_signature(signature_key, signature, body) {
+        eprintln!("rejected notification: {err}");
+        return; // and answer, say, 401
+    }
+    // The notification came from Authorize.Net: parse and handle it.
+}
+# handle(&SecretString::from("key"), "sha512=00", b"{}");
+```
+
+Verification is pure Rust, so it works on WebAssembly too.
 
 ## Logging
 

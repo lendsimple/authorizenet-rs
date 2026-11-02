@@ -8,6 +8,13 @@ the crates follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `webhook::verify_signature` (feature `webhooks`) checks the `X-ANET-Signature`
+  header of a webhook notification against its body, in constant time, and reports
+  a malformed header apart from a mismatch (`SignatureError`). It builds for
+  WebAssembly.
+
 ## [0.1.0] - 2026-10-08
 
 The first release.

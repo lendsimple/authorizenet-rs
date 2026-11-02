@@ -47,6 +47,7 @@ jobs:
           - --no-default-features
           - --no-default-features --features ureq,rustls
           - --no-default-features --features reqwest,native-tls
+          - --no-default-features --features webhooks
           - --all-features
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -126,9 +127,11 @@ jobs:
       # Browsers and edge runtimes: the library on its own, and with reqwest, whose
       # wasm backend uses the JavaScript fetch API.
       - run: cargo clippy -p authorizenet --lib --target wasm32-unknown-unknown --no-default-features -- -D warnings
+      - run: cargo clippy -p authorizenet --lib --target wasm32-unknown-unknown --no-default-features --features webhooks -- -D warnings
       - run: cargo clippy -p authorizenet --lib --target wasm32-unknown-unknown --no-default-features --features reqwest -- -D warnings
       # WASI: the library with a custom transport (reqwest does not support WASI).
       - run: cargo clippy -p authorizenet --lib --target wasm32-wasip2 --no-default-features -- -D warnings
+      - run: cargo clippy -p authorizenet --lib --target wasm32-wasip2 --no-default-features --features webhooks -- -D warnings
 
   codegen:
     runs-on: ubuntu-latest
