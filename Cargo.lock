@@ -35,7 +35,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "authorizenet"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "authorizenet-derive",
  "bon",
@@ -61,7 +61,7 @@ dependencies = [
 
 [[package]]
 name = "authorizenet-derive"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2561,7 +2561,7 @@ checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
 
 [[package]]
 name = "xtask"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "heck",
  "insta",

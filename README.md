@@ -16,7 +16,7 @@ payment API, with async and blocking clients.
 
 ```toml
 [dependencies]
-authorizenet = "0.1"
+authorizenet = "0.2"
 ```
 
 | Feature | Default | |
